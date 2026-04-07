@@ -1,0 +1,2348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Get Ahead · UHart Baseball</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red:    #C8102E;
+    --navy:   #0a0e1a;
+    --navy2:  #111827;
+    --card:   #141c2c;
+    --card2:  #1a2236;
+    --border: #222d44;
+    --text:   #edf0f7;
+    --sub:    #c4cad8;
+    --muted:  #6b7a99;
+    --green:  #22c55e;
+    --yellow: #f59e0b;
+    --blue:   #3b82f6;
+    --purple: #a78bfa;
+    --orange: #f97316;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--navy);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  /* ── HEADER ─────────────────────────────── */
+  .header {
+    background: linear-gradient(135deg, #0a0e1a 0%, #16060e 100%);
+    border-bottom: 2px solid var(--red);
+    padding: 11px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .logo { display: flex; align-items: center; gap: 10px; }
+
+  .logo-icon {
+    width: 38px; height: 38px;
+    background: var(--red); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 19px;
+  }
+
+  .logo-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px; letter-spacing: 3px;
+    color: white; line-height: 1;
+  }
+
+  .logo-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+
+  /* Season Toggle */
+  .season-switcher {
+    display: flex; background: var(--card2);
+    border: 1px solid var(--border); border-radius: 20px; padding: 3px; gap: 2px;
+  }
+
+  .szn-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 1px;
+    padding: 5px 14px; border-radius: 16px;
+    border: none; background: transparent;
+    color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+
+  .szn-btn.active { background: var(--red); color: white; }
+  .szn-btn:hover:not(.active) { color: var(--text); }
+
+  /* ── TABS ────────────────────────────────── */
+  .tabs {
+    display: flex; background: var(--navy2);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    flex: 0 0 auto; padding: 12px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 2px solid transparent; white-space: nowrap;
+    transition: all 0.2s; background: none;
+    border-top: none; border-left: none; border-right: none;
+  }
+  .tab.active { color: var(--red); border-bottom-color: var(--red); background: rgba(200,16,46,0.05); }
+  .tab:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.03); }
+
+  /* ── LAYOUT ──────────────────────────────── */
+  .page { display: none; }
+  .page.active { display: block; }
+  .main { padding: 18px 16px; max-width: 900px; margin: 0 auto; }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 2px;
+    color: var(--red); margin-bottom: 3px;
+  }
+
+  .section-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 1px; margin-bottom: 16px; text-transform: uppercase;
+  }
+
+  .divider { height: 1px; background: var(--border); margin: 16px 0; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--red);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── SEARCH BAR ──────────────────────────── */
+  .search-wrap {
+    position: relative; margin-bottom: 14px;
+  }
+
+  .search-input {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px 9px 36px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; color: var(--text);
+    outline: none; transition: border-color 0.2s;
+  }
+  .search-input::placeholder { color: var(--muted); }
+  .search-input:focus { border-color: rgba(200,16,46,0.5); }
+
+  .search-icon {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px; color: var(--muted); pointer-events: none;
+  }
+
+  /* ── CARDS ───────────────────────────────── */
+  .player-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px;
+    margin-bottom: 10px; transition: border-color 0.2s;
+  }
+  .player-card:hover { border-color: rgba(200,16,46,0.35); }
+
+  .player-header {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-bottom: 12px;
+  }
+
+  .player-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 19px; letter-spacing: 1px;
+  }
+
+  .player-pos {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    background: var(--navy2); padding: 2px 8px;
+    border-radius: 4px; border: 1px solid var(--border); margin-left: 8px;
+  }
+
+  .rank-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; color: var(--red); opacity: 0.6;
+    min-width: 32px; text-align: right;
+  }
+
+  /* ── STAT CHIPS ──────────────────────────── */
+  .stat-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .stat-chip {
+    background: var(--navy2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 5px 11px; text-align: center;
+  }
+
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase; display: block;
+  }
+
+  .stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px; font-weight: 500;
+  }
+
+  .stat-val.good { color: var(--green); }
+  .stat-val.ok   { color: var(--yellow); }
+  .stat-val.bad  { color: #ef4444; }
+  .stat-val.neutral { color: var(--text); }
+
+  /* ── SPLITS ──────────────────────────────── */
+  .split-cols {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-top: 12px;
+  }
+
+  .split-block {
+    background: var(--card2); border-radius: 8px;
+    padding: 10px; border: 1px solid var(--border);
+  }
+
+  .split-label { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 1px; margin-bottom: 5px; }
+  .split-label.vs-rhp { color: #60a5fa; }
+  .split-label.vs-lhp { color: var(--purple); }
+
+  .split-main-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 19px; font-weight: 500; line-height: 1.1;
+  }
+
+  .split-ops { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .better-tag {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 1px;
+    padding: 2px 7px; border-radius: 4px; margin-top: 5px;
+  }
+  .better-tag.rhp  { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.25); }
+  .better-tag.lhp  { background: rgba(167,139,250,0.12); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+  .better-tag.even { background: rgba(34,197,94,0.10); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+
+  /* ── PITCH NOTE STRIP ────────────────────── */
+  .pitch-note {
+    margin-top: 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px; padding: 7px 11px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--sub);
+    display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+  }
+
+  .pitch-note-label {
+    font-size: 9px; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-right: 2px;
+  }
+
+  /* ── FILTER ROW ──────────────────────────── */
+  .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+
+  .filter-btn {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 1px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 20px;
+    border: 1px solid var(--border); background: var(--card);
+    color: var(--muted); cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn.active { background: var(--red); border-color: var(--red); color: white; }
+  .filter-btn:hover:not(.active) { border-color: var(--red); color: var(--text); }
+
+  /* ── PITCHER CARDS ───────────────────────── */
+  .pitcher-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px; margin-bottom: 10px;
+  }
+
+  .pitcher-hand {
+    font-family: 'Bebas Neue', sans-serif; font-size: 13px;
+    padding: 3px 9px; border-radius: 4px;
+    background: rgba(200,16,46,0.15); color: var(--red);
+    border: 1px solid rgba(200,16,46,0.3);
+  }
+  .pitcher-hand.lhp { background: rgba(167,139,250,0.15); color: var(--purple); border-color: rgba(167,139,250,0.3); }
+
+  .pitch-bar-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 4px; cursor: pointer;
+    padding: 3px 5px; border-radius: 5px; transition: background 0.12s;
+  }
+  .pitch-bar-row:hover { background: rgba(255,255,255,0.04); }
+
+  .pitch-type-label { font-family: 'DM Mono', monospace; font-size: 10px; width: 30px; }
+
+  .pitch-bar-bg { flex: 1; height: 8px; background: var(--navy2); border-radius: 4px; overflow: hidden; }
+  .pitch-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+  .pitch-bar-pct { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); width: 34px; text-align: right; }
+  .pitch-expand-icon { font-size: 9px; color: var(--muted); width: 12px; text-align: center; }
+
+  .pitch-detail-panel {
+    margin: 0 0 5px 43px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid rgba(200,16,46,0.2);
+    border-radius: 0 6px 6px 0;
+    padding: 7px 10px;
+    display: flex; gap: 5px; flex-wrap: wrap;
+  }
+  .pitch-detail-panel.hidden { display: none; }
+
+  /* ── MATCHUP TOOL ────────────────────────── */
+  .matchup-inputs {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; margin-bottom: 16px;
+  }
+
+  .input-group { margin-bottom: 16px; }
+  .input-group:last-of-type { margin-bottom: 0; }
+
+  .input-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 8px; display: block;
+  }
+
+  .btn-group { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .opt-btn {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 0.5px; padding: 7px 16px;
+    border-radius: 6px; border: 1px solid var(--border);
+    background: var(--card2); color: var(--muted);
+    cursor: pointer; transition: all 0.18s;
+  }
+  .opt-btn.selected { background: var(--red); border-color: var(--red); color: white; }
+  .opt-btn:hover:not(.selected) { border-color: var(--red); color: var(--text); }
+
+  .gen-btn {
+    width: 100%; margin-top: 16px;
+    font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 2px;
+    padding: 13px; border-radius: 8px;
+    background: var(--red); border: none; color: white;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .gen-btn:hover { opacity: 0.88; }
+
+  .matchup-result-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden;
+  }
+
+  .matchup-header {
+    background: linear-gradient(90deg, rgba(200,16,46,0.18), transparent);
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .matchup-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 1px; }
+  .matchup-desc { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); margin-left: auto; }
+
+  .matchup-row {
+    display: flex; align-items: center; padding: 10px 16px;
+    border-bottom: 1px solid var(--border); gap: 10px;
+    transition: background 0.15s;
+  }
+  .matchup-row:last-child { border-bottom: none; }
+  .matchup-row:hover { background: rgba(255,255,255,0.02); }
+
+  .matchup-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; color: var(--red); opacity: 0.6; width: 26px;
+  }
+
+  .matchup-player { flex: 1; }
+  .matchup-player-name { font-weight: 600; font-size: 14px; }
+  .matchup-player-pos { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+
+  .matchup-reason {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--sub); text-align: right; max-width: 200px; line-height: 1.4;
+  }
+
+  .warn-tag {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 9px; color: #f59e0b;
+    background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 4px; padding: 1px 5px; margin-left: 4px;
+  }
+
+  /* ── LEVERAGE TABLE ─────────────────────── */
+  .lev-table {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; overflow: hidden; margin-bottom: 14px;
+  }
+
+  .lev-thead {
+    display: grid;
+    grid-template-columns: 28px 1fr 90px 72px 68px 68px 68px 72px;
+    gap: 6px; padding: 10px 14px;
+    background: var(--navy2); border-bottom: 1px solid var(--border);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 1px; color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .lev-row {
+    display: grid;
+    grid-template-columns: 28px 1fr 90px 72px 68px 68px 68px 72px;
+    gap: 6px; padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    align-items: center; transition: background 0.15s;
+  }
+
+  .lev-row:last-child { border-bottom: none; }
+  .lev-row:hover { background: rgba(255,255,255,0.02); }
+
+  .lev-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; color: var(--red); opacity: 0.55;
+  }
+
+  .lev-name { font-weight: 600; font-size: 14px; line-height: 1.2; }
+  .lev-hand-tag {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 9px; padding: 1px 5px; border-radius: 3px; margin-top: 2px;
+    background: rgba(200,16,46,0.15); color: var(--red);
+    border: 1px solid rgba(200,16,46,0.25);
+  }
+  .lev-hand-tag.lhp { background: rgba(167,139,250,0.15); color: var(--purple); border-color: rgba(167,139,250,0.25); }
+
+  .lev-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; text-align: center; color: var(--sub);
+  }
+
+  .lev-score-cell {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px; text-align: center; color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  .lev-score-cell.scored { color: var(--yellow); }
+
+  .lev-coming {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; color: var(--muted);
+    text-align: center; padding: 10px;
+    border-top: 1px solid var(--border);
+    letter-spacing: 1px;
+  }
+
+  @media (max-width: 600px) {
+    .lev-thead { grid-template-columns: 24px 1fr 80px 60px 56px; }
+    .lev-row   { grid-template-columns: 24px 1fr 80px 60px 56px; }
+    .lev-thead > *:nth-child(n+6),
+    .lev-row   > *:nth-child(n+6) { display: none; }
+  }
+
+  /* ── 2026 PLACEHOLDER ────────────────────── */
+  .season-placeholder {
+    text-align: center; padding: 60px 20px;
+  }
+  .season-placeholder-year {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 80px; color: var(--red); opacity: 0.12; line-height: 1;
+  }
+  .season-placeholder-label {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 3px; color: var(--muted); margin-top: 8px;
+  }
+  .season-placeholder-sub {
+    font-size: 13px; color: var(--muted); margin-top: 6px;
+    opacity: 0.6; line-height: 1.7;
+  }
+
+  /* ── RESPONSIVE ──────────────────────────── */
+  @media (max-width: 480px) {
+    .split-cols { grid-template-columns: 1fr 1fr; }
+    .matchup-reason { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🦅</div>
+    <div>
+      <div class="logo-text">Get Ahead</div>
+      <div class="logo-sub">UHart Baseball · 2026</div>
+    </div>
+  </div>
+  <div class="season-switcher">
+    <button class="szn-btn" id="btn-2025" onclick="switchSeason('2025')">2025</button>
+    <button class="szn-btn active" id="btn-2026" onclick="switchSeason('2026')">2026</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active"  onclick="showPage('splits', this)">L/R Splits</button>
+  <button class="tab"         onclick="showPage('matchup', this)">Matchup</button>
+  <button class="tab"         onclick="showPage('pitchers', this)">Pitchers</button>
+  <button class="tab"         onclick="showPage('leverage', this)">Leverage</button>
+  <button class="tab"         onclick="showPage('reports', this)">Scouting</button>
+</div>
+
+<!-- ════════════════ SPLITS ════════════════ -->
+<div id="page-splits" class="page active main">
+  <div class="section-title">L/R Splits</div>
+  <div class="section-sub" id="splits-sub">AVG · OPS · Chase % · Whiff % — 2026</div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="splits-search" type="text" placeholder="Search player..." oninput="renderSplits(activeSplitFilter)">
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterSplits('all', this)">All</button>
+    <button class="filter-btn" onclick="filterSplits('rhp', this)">Better vs RHP</button>
+    <button class="filter-btn" onclick="filterSplits('lhp', this)">Better vs LHP</button>
+  </div>
+  <div id="splits-list"></div>
+</div>
+
+<!-- ════════════════ MATCHUP ════════════════ -->
+<div id="page-matchup" class="page main">
+  <div class="section-title">Matchup Tool</div>
+  <div class="section-sub">Enter opposing pitcher profile — get your best bats</div>
+
+  <div class="matchup-inputs">
+    <div class="input-group">
+      <span class="input-label">Pitcher Arm</span>
+      <div class="btn-group">
+        <button class="opt-btn selected" data-group="hand" data-val="R" onclick="selectOpt(this)">RHP</button>
+        <button class="opt-btn"          data-group="hand" data-val="L" onclick="selectOpt(this)">LHP</button>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <span class="input-label">Primary Pitch</span>
+      <div class="btn-group">
+        <button class="opt-btn selected" data-group="pitch" data-val="none"  onclick="selectOpt(this)">No Preference</button>
+        <button class="opt-btn"          data-group="pitch" data-val="fb"    onclick="selectOpt(this)">FB Heavy</button>
+        <button class="opt-btn"          data-group="pitch" data-val="bb"    onclick="selectOpt(this)">Breaking Ball</button>
+        <button class="opt-btn"          data-group="pitch" data-val="mixed" onclick="selectOpt(this)">Mixed</button>
+      </div>
+    </div>
+
+    <button class="gen-btn" onclick="generateMatchup()">Generate Lineup ›</button>
+  </div>
+
+  <div id="matchup-output"></div>
+</div>
+
+<!-- ════════════════ PITCHERS ════════════════ -->
+<div id="page-pitchers" class="page main">
+  <div class="section-title">Pitching Staff</div>
+  <div class="section-sub">Pitch Mix · Splits · RISP · Click pitch to expand</div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="pitchers-search" type="text" placeholder="Search pitcher..." oninput="renderPitchers()">
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterPitchers('all', this)">All</button>
+    <button class="filter-btn" onclick="filterPitchers('rhh', this)">Good vs RHH</button>
+    <button class="filter-btn" onclick="filterPitchers('lhh', this)">Good vs LHH</button>
+  </div>
+  <div id="pitchers-list"></div>
+</div>
+
+<!-- ════════════════ LEVERAGE ════════════════ -->
+<div id="page-leverage" class="page main">
+  <div class="section-title">Leverage Rankings</div>
+  <div class="section-sub">RISP · K:BB · Chase · Whiff · Strike% · Lev Score</div>
+
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterLeverage('overall', this)">Overall</button>
+    <button class="filter-btn"        onclick="filterLeverage('rhh', this)">vs RHH</button>
+    <button class="filter-btn"        onclick="filterLeverage('lhh', this)">vs LHH</button>
+  </div>
+
+  <div id="leverage-list"></div>
+</div>
+
+<!-- ════════════════ SCOUTING ════════════════ -->
+<div id="page-reports" class="page main">
+  <div class="section-title">Scouting Reports</div>
+  <div class="section-sub">Hot Zones · Cold Zones · RISP Notes · Based on Career Data</div>
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input class="search-input" id="reports-search" type="text" placeholder="Search player..." oninput="renderReports()">
+  </div>
+  <div id="reports-list"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════
+let currentSeason = '2026';
+let activeSplitFilter = 'all';
+
+const hitters = [
+  {
+    name:'Tyler Shannon', pos:'IF/1B', avg:.343, ops:.872, gp:27,
+    rhpAvg:.321, rhpOps:.806, lhpAvg:.381, lhpOps:.952,
+    rhpChase:.32, rhpWhiff:.34, lhpChase:.52, lhpWhiff:.25,
+    pitchData:{
+      FB: { avgOps:'.342/.931', chase:.38, whiff:.31, swing:.59 },
+      BB: { avgOps:'.333/.777', chase:.38, whiff:.35, swing:.67 },
+      OFS:{ avgOps:'2 for 4',  chase:.47, whiff:.22, swing:.62 },
+    }
+  },
+  {
+    name:'JJ Romatzick', pos:'SS', avg:.385, ops:.928, gp:40,
+    rhpAvg:.408, rhpOps:.967, lhpAvg:.355, lhpOps:.898,
+    rhpChase:.11, rhpWhiff:.13, lhpChase:.34, lhpWhiff:.10,
+    pitchData:null
+  },
+  {
+    name:'Ryan Knight', pos:'OF', avg:.320, ops:.984, gp:35,
+    rhpAvg:.356, rhpOps:1.152, lhpAvg:.294, lhpOps:.780,
+    rhpChase:.25, rhpWhiff:.25, lhpChase:.27, lhpWhiff:.18,
+    pitchData:{
+      FB: { avgOps:'.325/1.163', chase:.21, whiff:.18, swing:.59 },
+      BB: { avgOps:'.273/.724',  chase:.18, whiff:.32, swing:.41 },
+      OFS:{ avgOps:'.429/1.335', chase:.50, whiff:.24, swing:.65 },
+    }
+  },
+  {
+    name:'Jackson Ciccone', pos:'OF', avg:.335, ops:.891, gp:42,
+    rhpAvg:.330, rhpOps:.862, lhpAvg:.214, lhpOps:.615,
+    rhpChase:.21, rhpWhiff:.09, lhpChase:.30, lhpWhiff:.14,
+    pitchData:{
+      FB: { avgOps:'.292/.828',   chase:.21, whiff:.12, swing:.54 },
+      BB: { avgOps:'.275/.600',   chase:.25, whiff:.10, swing:.51 },
+      OFS:{ avgOps:'.400/1.133',  chase:.26, whiff:.04, swing:.55 },
+    }
+  },
+  {
+    name:'Jeremy Mangiameli', pos:'3B', avg:.350, ops:.940, gp:36,
+    rhpAvg:.382, rhpOps:1.060, lhpAvg:.286, lhpOps:.671,
+    rhpChase:.19, rhpWhiff:.20, lhpChase:.20, lhpWhiff:.26,
+    pitchData:null
+  },
+  {
+    name:'Alek Popovich', pos:'OF', avg:.316, ops:.872, gp:28,
+    rhpAvg:.343, rhpOps:.970, lhpAvg:.467, lhpOps:1.500,
+    rhpChase:.19, rhpWhiff:.08, lhpChase:.06, lhpWhiff:.08,
+    pitchData:null
+  },
+  {
+    name:'Patrick Joseph', pos:'2B', avg:.350, ops:.886, gp:24,
+    rhpAvg:.333, rhpOps:.908, lhpAvg:.222, lhpOps:.639,
+    rhpChase:.20, rhpWhiff:.17, lhpChase:.19, lhpWhiff:.11,
+    pitchData:{
+      FB: { avgOps:'.324/.954', chase:.18, whiff:.14, swing:.43 },
+      BB: { avgOps:'3 for 10',  chase:.23, whiff:.11, swing:.39 },
+      OFS:{ avgOps:'3 for 9',   chase:.22, whiff:.31, swing:.50 },
+    }
+  },
+  {
+    name:'Cameron Boardman', pos:'C', avg:.325, ops:.883, gp:23,
+    rhpAvg:.300, rhpOps:.746, lhpAvg:.500, lhpOps:1.442,
+    rhpChase:.22, rhpWhiff:.26, lhpChase:.10, lhpWhiff:.23,
+    pitchData:{
+      FB: { avgOps:'.292/.797', chase:.23, whiff:.26, swing:.51 },
+      BB: { avgOps:'6 for 8',   chase:.15, whiff:.23, swing:.38 },
+      OFS:{ avgOps:'1 for 13',  chase:.20, whiff:.32, swing:.50 },
+    }
+  },
+  {
+    name:'Nico DiGioia', pos:'OF', avg:.350, ops:1.001, gp:16,
+    rhpAvg:.375, rhpOps:1.198, lhpAvg:.333, lhpOps:.666,
+    rhpChase:.12, rhpWhiff:.27, lhpChase:.31, lhpWhiff:.33,
+    pitchData:{
+      FB: { avgOps:'.364/1.235', chase:.10, whiff:.15, swing:.38 },
+      BB: { avgOps:'3 for 9',    chase:.20, whiff:.37, swing:.38 },
+      OFS:{ avgOps:'2 for 7',    chase:.58, whiff:.50, swing:.67 },
+    }
+  },
+  {
+    name:'Josh Kaplan', pos:'IF', avg:.250, ops:.582, gp:22,
+    rhpAvg:.326, rhpOps:.722, lhpAvg:.118, lhpOps:.387,
+    rhpChase:.20, rhpWhiff:.12, lhpChase:.32, lhpWhiff:.07,
+    pitchData:{
+      FB: { avgOps:'.395/.886', chase:.09, whiff:.11, swing:.45 },
+      BB: { avgOps:'1 for 11',  chase:.36, whiff:.14, swing:.41 },
+      OFS:{ avgOps:'0 for 9',   chase:.39, whiff:.06, swing:.55 },
+    }
+  },
+  {
+    name:'Peyton West', pos:'IF', avg:.313, ops:.916, gp:14,
+    rhpAvg:.238, rhpOps:.894, lhpAvg:.667, lhpOps:2.333,
+    rhpChase:.15, rhpWhiff:.19, lhpChase:.20, lhpWhiff:.00,
+    pitchData:null
+  },
+  {
+    name:'Evin Curtiss', pos:'OF', avg:.242, ops:.820, gp:15,
+    rhpAvg:.182, rhpOps:.685, lhpAvg:.375, lhpOps:1.069,
+    rhpChase:.13, rhpWhiff:.24, lhpChase:.24, lhpWhiff:.12,
+    pitchData:null
+  },
+  {
+    name:'John Russell', pos:'C', avg:.227, ops:.704, gp:19,
+    rhpAvg:.222, rhpOps:.682, lhpAvg:.188, lhpOps:.610,
+    rhpChase:.24, rhpWhiff:.25, lhpChase:.44, lhpWhiff:.30,
+    pitchData:{
+      FB: { avgOps:'.200/.765', chase:.36, whiff:.29, swing:.53 },
+      BB: { avgOps:'1 for 11',  chase:.22, whiff:.25, swing:.40 },
+      OFS:{ avgOps:'.212/.661', chase:.31, whiff:.26, swing:.69 },
+    }
+  },
+  {
+    name:'Ben Schulz', pos:'OF', avg:.188, ops:.882, gp:7,
+    rhpAvg:.333, rhpOps:1.278, lhpAvg:.000, lhpOps:.200,
+    rhpChase:.20, rhpWhiff:.34, lhpChase:.43, lhpWhiff:.86,
+    pitchData:{
+      FB: { avgOps:'1 for 4', chase:.20, whiff:.42, swing:.74 },
+      BB: { avgOps:'0 for 4', chase:.30, whiff:.50, swing:.42 },
+      OFS:{ avgOps:'1 for 1', chase:.29, whiff:.50, swing:.33 },
+    }
+  },
+  {
+    name:'Zaynn Godbee', pos:'1B', avg:.170, ops:.546, gp:19,
+    rhpAvg:.189, rhpOps:.556, lhpAvg:.000, lhpOps:.375,
+    rhpChase:.11, rhpWhiff:.40, lhpChase:.25, lhpWhiff:.80,
+    pitchData:null
+  },
+];
+
+const pitchers = [
+  {
+    name:'Anthony Bubba', hand:'R', era:3.34, whip:1.40,
+    fbPct:.50, slPct:.41, cbPct:.05, chPct:.03,
+    rhhAvgOps:'.257/.709', lhhAvgOps:'.309/.715',
+    rhhChase:.19, rhhWhiff:.23, lhhChase:.29, lhhWhiff:.17,
+    rhhKbb:'36:15', lhhKbb:'10:1', rhhStrike:.63, lhhStrike:.69,
+    riscpOps:'.242/.642',
+    pitchDetails:{
+      FB:{ avgOps:'.333/.860', chase:.25, whiff:.17, swing:.53, strike:.70 },
+      SL:{ avgOps:'.154/.471', chase:.19, whiff:.30, swing:.35, strike:.58 },
+      CB:{ avgOps:'2 for 3',   chase:.05, whiff:.25, swing:.22, strike:.54 },
+      CH:{ avgOps:'3 for 8',   chase:.42, whiff:.13, swing:.63, strike:.71 },
+    }
+  },
+  {
+    name:'Michael Featherstone', hand:'R', era:5.06, whip:1.31,
+    fbPct:.73, slPct:.26, cbPct:0, chPct:0,
+    rhhAvgOps:'.200/.554', lhhAvgOps:'.238/.619',
+    rhhChase:.23, rhhWhiff:.22, lhhChase:.22, lhhWhiff:.26,
+    rhhKbb:'18:0', lhhKbb:'4:2', rhhStrike:.70, lhhStrike:.64,
+    riscpOps:'.391/.826',
+    pitchDetails:{
+      FB:{ avgOps:'.219/.593', chase:.23, whiff:.24, swing:.49, strike:.71 },
+      SL:{ avgOps:'.167/.508', chase:.11, whiff:.24, swing:.38, strike:.63 },
+    }
+  },
+  {
+    name:'Tyler Blumetti', hand:'R', era:6.75, whip:1.58,
+    fbPct:.55, slPct:0, cbPct:.45, chPct:0,
+    rhhAvgOps:'.236/.712', lhhAvgOps:'.385/1.061',
+    rhhChase:.21, rhhWhiff:.22, lhhChase:.23, lhhWhiff:.13,
+    rhhKbb:'16:4', lhhKbb:'3:1', rhhStrike:.60, lhhStrike:.64,
+    riscpOps:'.148/.441',
+    pitchDetails:{
+      FB:{ avgOps:'.306/.908', chase:.19, whiff:.13, swing:.45, strike:.65 },
+      CB:{ avgOps:'.276/.758', chase:.27, whiff:.32, swing:.31, strike:.58 },
+    }
+  },
+  {
+    name:'Justin Gouin', hand:'R', era:7.18, whip:1.57,
+    fbPct:.68, slPct:.18, cbPct:.01, chPct:.13,
+    rhhAvgOps:'.265/.909', lhhAvgOps:'.300/.884',
+    rhhChase:.13, rhhWhiff:.19, lhhChase:.14, lhhWhiff:.37,
+    rhhKbb:'16:12', lhhKbb:'10:5', rhhStrike:.58, lhhStrike:.57,
+    riscpOps:'.229/.686',
+    pitchDetails:{
+      FB:{ avgOps:'.328/1.038', chase:.07, whiff:.17, swing:.34, strike:.60 },
+      SL:{ avgOps:'.174/.669',  chase:.29, whiff:.29, swing:.42, strike:.57 },
+      CH:{ avgOps:'.300/.817',  chase:.12, whiff:.44, swing:.41, strike:.49 },
+    }
+  },
+  {
+    name:'Sam Smith', hand:'R', era:7.71, whip:1.71,
+    fbPct:.64, slPct:.16, cbPct:.10, chPct:.10,
+    rhhAvgOps:'.213/.639', lhhAvgOps:'—',
+    rhhChase:.17, rhhWhiff:.18, lhhChase:.37, lhhWhiff:.16,
+    rhhKbb:'8:8', lhhKbb:'2:2', rhhStrike:.57, lhhStrike:.67,
+    riscpOps:'.394/.749',
+    pitchDetails:{
+      FB:{ avgOps:'.176/.525', chase:.14, whiff:.12, swing:.37, strike:.57 },
+      SL:{ avgOps:'1 for 10',  chase:.25, whiff:.24, swing:.44, strike:.59 },
+      CB:{ avgOps:'2 for 6',   chase:.33, whiff:.40, swing:.42, strike:.54 },
+      CH:{ avgOps:'3 for 10',  chase:.43, whiff:.13, swing:.62, strike:.71 },
+    }
+  },
+  {
+    name:'Evan Gentile', hand:'R', era:7.91, whip:1.76,
+    fbPct:.62, slPct:.14, cbPct:.15, chPct:.09,
+    rhhAvgOps:'.237/.699', lhhAvgOps:'—',
+    rhhChase:.14, rhhWhiff:.18, lhhChase:.24, lhhWhiff:.41,
+    rhhKbb:'7:7', lhhKbb:'7:4', rhhStrike:.61, lhhStrike:.33,
+    riscpOps:'.200/.660',
+    pitchDetails:{
+      FB:{ avgOps:'.231/.790', chase:.08, whiff:.19, swing:.37, strike:.57 },
+      SL:{ avgOps:'2 for 10',  chase:.22, whiff:.19, swing:.42, strike:.61 },
+      CB:{ avgOps:'3 for 11',  chase:.23, whiff:.25, swing:.37, strike:.60 },
+      CH:{ avgOps:'1 for 6',   chase:.53, whiff:.50, swing:.64, strike:.68 },
+    }
+  },
+  {
+    name:'Jeffrey Blake', hand:'R', era:8.84, whip:1.70,
+    fbPct:.61, slPct:.09, cbPct:.14, chPct:.16,
+    rhhAvgOps:'.333/.759', lhhAvgOps:'.516/1.476',
+    rhhChase:.21, rhhWhiff:.12, lhhChase:.23, lhhWhiff:.11,
+    rhhKbb:'11:2', lhhKbb:'3:3', rhhStrike:.67, lhhStrike:.60,
+    riscpOps:'.341/.790',
+    pitchDetails:{
+      FB:{ avgOps:'.384/.971', chase:.21, whiff:.12, swing:.47, strike:.69 },
+      CB:{ avgOps:'.400/.977', chase:.15, whiff:.03, swing:.30, strike:.54 },
+      CH:{ avgOps:'.400/.950', chase:.32, whiff:.20, swing:.59, strike:.63 },
+    }
+  },
+  {
+    name:'Michael Greco', hand:'R', era:9.00, whip:2.38,
+    fbPct:.70, slPct:.30, cbPct:0, chPct:0,
+    rhhAvgOps:'4 for 11', lhhAvgOps:'1 for 2',
+    rhhChase:.00, rhhWhiff:.30, lhhChase:.00, lhhWhiff:.00,
+    rhhKbb:'4:2', lhhKbb:'N/A', rhhStrike:.59, lhhStrike:.60,
+    riscpOps:'.250/.650',
+    pitchDetails:{
+      FB:{ avgOps:'3 for 9', chase:.00, whiff:.29, swing:.38, strike:.62 },
+      SL:{ avgOps:'2 for 4', chase:.00, whiff:.17, swing:.32, strike:.53 },
+    }
+  },
+  {
+    name:'Logan Huzi', hand:'R', era:10.32, whip:2.56,
+    fbPct:.54, slPct:.14, cbPct:.10, chPct:.22,
+    rhhAvgOps:'.343/1.179', lhhAvgOps:'.364/.895',
+    rhhChase:.18, rhhWhiff:.22, lhhChase:.21, lhhWhiff:.22,
+    rhhKbb:'6:6', lhhKbb:'3:3', rhhStrike:.55, lhhStrike:.55,
+    riscpOps:'.333/.975',
+    pitchDetails:{
+      FB:{ avgOps:'.387/1.150', chase:.16, whiff:.20, swing:.38, strike:.53 },
+      SL:{ avgOps:'3 for 11',   chase:.17, whiff:.29, swing:.40, strike:.63 },
+      CB:{ avgOps:'3 for 6',    chase:.20, whiff:.00, swing:.25, strike:.58 },
+      CH:{ avgOps:'1 for 8',    chase:.27, whiff:.30, swing:.43, strike:.58 },
+    }
+  },
+  {
+    name:'Julian Rondon', hand:'L', era:15.00, whip:3.17,
+    fbPct:.63, slPct:.11, cbPct:.26, chPct:0,
+    rhhAvgOps:'—', lhhAvgOps:'—',
+    rhhChase:.29, rhhWhiff:.34, lhhChase:.20, lhhWhiff:.00,
+    rhhKbb:'6:9', lhhKbb:'1:0', rhhStrike:.52, lhhStrike:.48,
+    riscpOps:'.400/.926',
+    pitchDetails:{
+      FB:{ avgOps:'5 for 9', chase:.30, whiff:.19, swing:.38, strike:.58 },
+      SL:{ avgOps:'1 for 1', chase:.11, whiff:.50, swing:.13, strike:.33 },
+      CB:{ avgOps:'2 for 6', chase:.33, whiff:.50, swing:.40, strike:.49 },
+    }
+  },
+];
+
+const scoutingReports = [
+  { name:'Tyler Shannon',    rl:'Great vs LHP — lowers Whiff but chase is higher. RHP numbers still good.', risp:'.400/1.038 — Drove guys in when needed. Attacked outer half FB and CB/SL low in zone.', cold:'Sinking FB and FB up-and-in. OFS and breakers low and away.', hot:'FB middle-away (pulling them). Hanging pitches early in count.' },
+  { name:'John Russell',     rl:'Better vs RHP overall — more Ks though. Fix whiff and oppo approach to be good vs LHP.', risp:'.238/.751, 50% K Rate — Pitched strictly outer half. Chases outer FB leading to K and weak contact.', cold:'FB up and chasing outside. BB and OFS low and out.', hot:'Middle and middle-low pitches — highest EV and best quality swings.' },
+  { name:'Ryan Knight',      rl:'Better vs RHP, generates most power. Serviceable vs LHP but induces weaker contact.', risp:'.360/1.260, BB>K — Shows up when it matters. Puts ball in the air a ton. Attacked all over with FB and OFS down.', cold:'Anything on outer half. Low CH. Higher velos elevated.', hot:'Anything middle-low, inner quadrant. Lower velo on elevated stuff too.' },
+  { name:'Ben Schulz',       rl:'Far better vs RHP. Insane whiff and chase vs LHP. RHP specialist only.', risp:'1 for 5 with HR, 4 Ks otherwise. Flyball heavy — great with runner on 3rd needing a sac fly.', cold:'Anything on outer half.', hot:'Low middle-in. North-south swing approach.' },
+  { name:'Jackson Ciccone',  rl:'Much better vs RHP. Lefties induce weak contact consistently.', risp:'.267/.700, 19 RBI — Puts ball in play, lots of GB to MIF which can score runs.', cold:'Anything elevated. Inside for weak contact.', hot:'Middle-low. Most XBH and hard hits when on time outside.' },
+  { name:'Josh Kaplan',      rl:'Only hit vs RHP — numbers miles better, much less chase. LHP brings tons of chase and weaker contact.', risp:'.364/.871, 13 RBI — Great bat-to-ball. Will get a guy over or get a hit. Great bunter and GB hitter.', cold:'FB elevated and away. CH in zone.', hot:'Fastballs he can turn on.' },
+  { name:'Cameron Boardman', rl:'Good vs RHP, great in small sample vs LHP (4 for 8).', risp:'.455/.975 — Big singles guy. Heavy dose of FB low-away with CH.', cold:'Low CH in zone. Anything on outer half.', hot:'Middle-low in the zone.' },
+  { name:'Nico DiGioia',     rl:'Good vs both sides. Cuts chase and whiff vs RHP (usually due to CH).', risp:'3 for 12, .875 OPS — 3 BB, 3 Ks. Gets ball in the air a lot; whiff depends on pitcher.', cold:"CH/SL away. FB up-and-away when he doesn't extend.", hot:'FB middle-low. Can catch up to elevated stuff.' },
+  { name:'Patrick Joseph',   rl:'Switch hitter — better overall swings vs RHP. Still solid vs LHP, less XBH.', risp:'.381/1.004, even BB/K — Puts ball in play to right side. Good for quick contact situations.', cold:'Any pitch on outer half.', hot:'Middle-in. Pitches that move vertically — high FB, low CH.' },
+];
+
+// ── 2026 (populate as season progresses) ──
+const hitters2026 = [
+{
+  'name': 'Nico DiGioia',
+  'pos': 'OF',
+  'avg': 0.367,
+  'ops': 0.956,
+  'gp': 17,
+  'rhpAvg': 0.424,
+  'rhpOps': 0.989,
+  'lhpAvg': 0.333,
+  'lhpOps': 0.857,
+  'rhpChase': 0.25,
+  'rhpWhiff': 0.31,
+  'lhpChase': 0.15,
+  'lhpWhiff': 0.12,
+  'pitchData': {'FB':{'avgOps':'.385/.854', 'opsVal':0.854, 'chase':0.15, 'whiff':0.16, 'swing':0.25}, 'BB':{'avgOps':'.400/1.100', 'opsVal':1.1, 'chase':0.43, 'whiff':0.36, 'swing':0.39}, 'OFS':{'avgOps':'.333/.833', 'opsVal':0.833, 'chase':0.2, 'whiff':0.2, 'swing':0.25}},
+  'rl': 'Good vs both, but cuts chase and whiff vs RHP (usually due to the CH)',
+  'risp': '3 for 12/.875, 3 BB and 3 Ks, gets the ball in the air a ton, just adds a lot of whiff depending on pitcher',
+  'cold': 'CH/SL away, FB up and away when doesn\'t extend',
+  'hot': 'FB middle low, and can catch up to elevated stuff. Stay on outer half and he won\'t have many holes'
+},
+{
+  'name': 'Alek Popovich',
+  'pos': 'OF',
+  'avg': 0.362,
+  'ops': 0.907,
+  'gp': 15,
+  'rhpAvg': 0.355,
+  'rhpOps': 0.819,
+  'lhpAvg': 0.333,
+  'lhpOps': 0.812,
+  'rhpChase': 0.22,
+  'rhpWhiff': 0.06,
+  'lhpChase': 0.25,
+  'lhpWhiff': 0.21,
+  'pitchData': {'FB':{'avgOps':'.312/.715', 'opsVal':0.715, 'chase':0.26, 'whiff':0.06, 'swing':0.33}, 'BB':{'avgOps':'.333/.809', 'opsVal':0.809, 'chase':0.1, 'whiff':0.33, 'swing':0.22}, 'OFS':{'avgOps':'.500/.833', 'opsVal':0.833, 'chase':0.29, 'whiff':0.0, 'swing':0.33}},
+  'rl': 'Excels against either, in small sample rakes versus LHP and chases less',
+  'risp': '.407/1.264, BB>K, Shows up when it matters 18 RBI with RISP. Heavy FB attack on both sides of plate, middle-low, and high CB early',
+  'cold': 'Low zone, and OFS on outer half (pulls head and body out)',
+  'hot': 'Middle-up on either half, almost exclusively FB (77% of hits, 61% of BIP)'
+},
+{
+  'name': 'Jackson Ciccone',
+  'pos': 'OF',
+  'avg': 0.345,
+  'ops': 0.828,
+  'gp': 16,
+  'rhpAvg': 0.333,
+  'rhpOps': 0.821,
+  'lhpAvg': 0.278,
+  'lhpOps': 0.633,
+  'rhpChase': 0.22,
+  'rhpWhiff': 0.19,
+  'lhpChase': 0.18,
+  'lhpWhiff': 0.06,
+  'pitchData': {'FB':{'avgOps':'.312/.784', 'opsVal':0.784, 'chase':0.18, 'whiff':0.09, 'swing':0.4}, 'BB':{'avgOps':'.286/.654', 'opsVal':0.654, 'chase':0.28, 'whiff':0.2, 'swing':0.4}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.33, 'whiff':0.25, 'swing':0.4}},
+  'rl': 'Much better vs RHP, Leftties induce weak contact',
+  'risp': '.267/.700, 19 RBI, puts the ball in play consistently, lot of GB to MIF, which can score runs',
+  'cold': 'Anything elevated, and inside for weak contact ',
+  'hot': 'Middle-low, most XBH and hard hits when on time with outside'
+},
+{
+  'name': 'JJ Romatzick',
+  'pos': 'SS',
+  'avg': 0.286,
+  'ops': 0.839,
+  'gp': 18,
+  'rhpAvg': 0.364,
+  'rhpOps': 1.082,
+  'lhpAvg': 0.214,
+  'lhpOps': 0.664,
+  'rhpChase': 0.15,
+  'rhpWhiff': 0.08,
+  'lhpChase': 0.1,
+  'lhpWhiff': 0.07,
+  'pitchData': {'FB':{'avgOps':'.200/.629', 'opsVal':0.629, 'chase':0.1, 'whiff':0.04, 'swing':0.41}, 'BB':{'avgOps':'.400/.945', 'opsVal':0.945, 'chase':0.14, 'whiff':0.13, 'swing':0.36}, 'OFS':{'avgOps':'1.000/2.500', 'opsVal':2.5, 'chase':0.33, 'whiff':0.14, 'swing':0.41}},
+  'rl': 'Excels against either, but chases much more vs LHP',
+  'risp': '.465/1.086, BB=K. Most consistent contact guy on the team , will put the ball in play, 28 RBIs with RISP. Attacked FB elevated and away, BB away, OFS down',
+  'cold': 'Elevated FB, SL/CH middle away',
+  'hot': 'Evrything on middle-lower third ,outer half too. GB/LD approach, don\'t climb ladder'
+},
+{
+  'name': 'Jeremy Mangiameli',
+  'pos': '3B',
+  'avg': 0.267,
+  'ops': 0.9,
+  'gp': 15,
+  'rhpAvg': 0.19,
+  'rhpOps': 0.774,
+  'lhpAvg': 0.375,
+  'lhpOps': 0.888,
+  'rhpChase': 0.11,
+  'rhpWhiff': 0.2,
+  'lhpChase': 0.09,
+  'lhpWhiff': 0.18,
+  'pitchData': {'FB':{'avgOps':'.333/.922', 'opsVal':0.922, 'chase':0.12, 'whiff':0.24, 'swing':0.36}, 'BB':{'avgOps':'.250/.694', 'opsVal':0.694, 'chase':0.09, 'whiff':0.19, 'swing':0.34}, 'OFS':{'avgOps':'.333/1.666', 'opsVal':1.666, 'chase':0.0, 'whiff':0.0, 'swing':0.36}},
+  'rl': 'Very good vs RHP, but soldi vs Leftties, little more chase',
+  'risp': '.300/.843, even BB and K, attacked middle-away with FB primarily elevated, with heavy mix of breakers, lots of waste pitches',
+  'cold': 'Elevated FB or low Sinkers, not pitched much on inside',
+  'hot': 'Middle low pitches, any BB that sit in the zone'
+},
+{
+  'name': 'Ryan Knight',
+  'pos': 'OF',
+  'avg': 0.232,
+  'ops': 0.743,
+  'gp': 17,
+  'rhpAvg': 0.167,
+  'rhpOps': 0.598,
+  'lhpAvg': 0.6,
+  'lhpOps': 1.592,
+  'rhpChase': 0.1,
+  'rhpWhiff': 0.19,
+  'lhpChase': 0.18,
+  'lhpWhiff': 0.18,
+  'pitchData': {'FB':{'avgOps':'.300/.962', 'opsVal':0.962, 'chase':0.09, 'whiff':0.12, 'swing':0.41}, 'BB':{'avgOps':'.333/.885', 'opsVal':0.885, 'chase':0.14, 'whiff':0.32, 'swing':0.47}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.18, 'whiff':0.25, 'swing':0.41}},
+  'rl': 'Better vs RHP, generates most power. Servicebale vs LHP but induces  weaker contact',
+  'risp': '.360/1.260, BB>K. Shows up when it matters, does damage and puts ball in play. Puts the ball in the air a ton. Being attacked all over with FB and OFS down',
+  'cold': 'Anything on the outer half, and low CH. Higher velos elevated',
+  'hot': 'Anything middle-low, inner quadrant is most successful. Lower velo on elevated stuff is good too'
+},
+{
+  'name': 'Patrick Joseph',
+  'pos': '2B',
+  'avg': 0.19,
+  'ops': 0.572,
+  'gp': 16,
+  'rhpAvg': 0.179,
+  'rhpOps': 0.46,
+  'lhpAvg': 0.25,
+  'lhpOps': 0.875,
+  'rhpChase': 0.24,
+  'rhpWhiff': 0.21,
+  'lhpChase': 0.17,
+  'lhpWhiff': 0.37,
+  'pitchData': {'FB':{'avgOps':'.312/.812', 'opsVal':0.812, 'chase':0.19, 'whiff':0.25, 'swing':0.67}, 'BB':{'avgOps':'.111/.422', 'opsVal':0.422, 'chase':0.47, 'whiff':0.35, 'swing':0.44}, 'OFS':{'avgOps':'.125/.250', 'opsVal':0.25, 'chase':0.29, 'whiff':0.33, 'swing':0.67}},
+  'rl': 'Obviosuly switch hitter, but better overall swings vs RHP, still solid vs LHP, just less XBH potential',
+  'risp': '.381/1.004, even BB and K, will put the ball in play to right side, good for quick contact',
+  'cold': 'Any pitch on outer half',
+  'hot': 'Middle in, any pitches that move vertically (High FB, Low CH) he can catch up to either'
+},
+{
+  'name': 'Jayden Gaither',
+  'pos': 'OF',
+  'avg': 0.455,
+  'ops': 1.182,
+  'gp': 5,
+  'rhpAvg': 0.5,
+  'rhpOps': 1.0,
+  'lhpAvg': 0.429,
+  'lhpOps': 1.286,
+  'rhpChase': 0.0,
+  'rhpWhiff': 0.33,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.0,
+  'pitchData': {'FB':{'avgOps':'.500/1.375', 'opsVal':1.375, 'chase':0.0, 'whiff':0.0, 'swing':0.5}, 'BB':{'avgOps':'.333/.666', 'opsVal':0.666, 'chase':0.0, 'whiff':0.25, 'swing':0.44}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':1.0, 'swing':0.5}},
+  'rl': null,
+  'risp': null,
+  'cold': null,
+  'hot': null
+},
+{
+  'name': 'Alyis Godbee',
+  'pos': 'OF',
+  'avg': 0.429,
+  'ops': 1.214,
+  'gp': 3,
+  'rhpAvg': 0.0,
+  'rhpOps': 0.25,
+  'lhpAvg': 0.75,
+  'lhpOps': 2.05,
+  'rhpChase': 0.0,
+  'rhpWhiff': 0.25,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.14,
+  'pitchData': {'FB':{'avgOps':'.500/1.321', 'opsVal':1.321, 'chase':0.0, 'whiff':0.0, 'swing':1.0}, 'BB':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.5, 'swing':0.33}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':1.0, 'swing':1.0}},
+  'rl': null,
+  'risp': null,
+  'cold': null,
+  'hot': null
+},
+{
+  'name': 'Peyton West',
+  'pos': 'IF',
+  'avg': 0.3,
+  'ops': 0.717,
+  'gp': 6,
+  'rhpAvg': 0.167,
+  'rhpOps': 0.542,
+  'lhpAvg': 0.5,
+  'lhpOps': 1.0,
+  'rhpChase': 0.14,
+  'rhpWhiff': 0.09,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.0,
+  'pitchData': {'FB':{'avgOps':'.000/.167', 'opsVal':0.167, 'chase':0.0, 'whiff':0.0, 'swing':0.0}, 'BB':{'avgOps':'.750/1.555', 'opsVal':1.555, 'chase':0.17, 'whiff':0.13, 'swing':0.44}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.0, 'swing':0.0}},
+  'rl': 'Higher sample vs RHP, minimal whiff and chase, but great numbers in small LHP sample',
+  'risp': '.462/1.390, pitched mainly middle away, in limited chances succeeded in RISP situations (6 for 13, 2 HRs, 10 RBI). GB/FB mix',
+  'cold': 'BB away, elevated FB',
+  'hot': 'Middle-away in lower quad, most success going other way but ability to turn on it'
+},
+{
+  'name': 'Zaynn Godbee',
+  'pos': '1B',
+  'avg': 0.29,
+  'ops': 0.969,
+  'gp': 12,
+  'rhpAvg': 0.286,
+  'rhpOps': 0.876,
+  'lhpAvg': 0.0,
+  'lhpOps': 0.5,
+  'rhpChase': 0.2,
+  'rhpWhiff': 0.33,
+  'lhpChase': 0.25,
+  'lhpWhiff': 0.33,
+  'pitchData': {'FB':{'avgOps':'.417/1.312', 'opsVal':1.312, 'chase':0.21, 'whiff':0.25, 'swing':0.74}, 'BB':{'avgOps':'.000/.500', 'opsVal':0.5, 'chase':0.0, 'whiff':0.2, 'swing':0.22}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.67, 'whiff':0.57, 'swing':0.74}},
+  'rl': 'Career shows great numbers vs RHP, but struggles versus LHP, draws walks but is 0 for 12 career wise',
+  'risp': '.077/.265, struggled in small sample this year, just due to whiff on high FB, low CH. Was miles better in \'24 (.455/1.145, No K\'s in 15 PA)',
+  'cold': 'Middle-up FB, SL/CB low and away',
+  'hot': 'Middle away pitches, backside power'
+},
+{
+  'name': 'Josh Kaplan',
+  'pos': 'IF',
+  'avg': 0.28,
+  'ops': 0.76,
+  'gp': 11,
+  'rhpAvg': 0.294,
+  'rhpOps': 0.812,
+  'lhpAvg': 0.2,
+  'lhpOps': 0.533,
+  'rhpChase': 0.07,
+  'rhpWhiff': 0.22,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.27,
+  'pitchData': {'FB':{'avgOps':'.333/.884', 'opsVal':0.884, 'chase':0.07, 'whiff':0.25, 'swing':0.5}, 'BB':{'avgOps':'.000/.200', 'opsVal':0.2, 'chase':0.0, 'whiff':0.1, 'swing':0.37}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.33, 'whiff':0.5, 'swing':0.5}},
+  'rl': 'Should only hit RHP, numbers miles better, and much less chase. LHP ton of chase and weaker contact',
+  'risp': '.364/.871, 13 RBI, reiterate great bat to ball skills, will get a guy over or hit, great bunter and GB hitter',
+  'cold': 'FB elevated and away, CH ',
+  'hot': 'Fastballs he can turn on '
+},
+{
+  'name': 'Sean Newman',
+  'pos': 'IF',
+  'avg': 0.267,
+  'ops': 0.58,
+  'gp': 4,
+  'rhpAvg': 0.308,
+  'rhpOps': 0.665,
+  'lhpAvg': 0.0,
+  'lhpOps': 0.0,
+  'rhpChase': 0.11,
+  'rhpWhiff': 0.21,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.25,
+  'pitchData': {'FB':{'avgOps':'.500/1.056', 'opsVal':1.056, 'chase':0.25, 'whiff':0.17, 'swing':0.5}, 'BB':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.17, 'swing':0.32}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.5, 'swing':0.5}},
+  'rl': null,
+  'risp': null,
+  'cold': null,
+  'hot': null
+},
+{
+  'name': 'Cameron Boardman',
+  'pos': 'C',
+  'avg': 0.243,
+  'ops': 0.855,
+  'gp': 13,
+  'rhpAvg': 0.217,
+  'rhpOps': 0.756,
+  'lhpAvg': 0.4,
+  'lhpOps': 1.067,
+  'rhpChase': 0.33,
+  'rhpWhiff': 0.23,
+  'lhpChase': 0.17,
+  'lhpWhiff': 0.31,
+  'pitchData': {'FB':{'avgOps':'.286/1.021', 'opsVal':1.021, 'chase':0.19, 'whiff':0.15, 'swing':0.74}, 'BB':{'avgOps':'.167/.611', 'opsVal':0.611, 'chase':0.1, 'whiff':0.38, 'swing':0.3}, 'OFS':{'avgOps':'.200/.400', 'opsVal':0.4, 'chase':0.88, 'whiff':0.43, 'swing':0.74}},
+  'rl': 'Good vs RHP, and great in small sample vs LHP (4 for 8)',
+  'risp': '.455/.975, big singles guy who can put ball in play, gets heavy dose of FB low and away with CH as well',
+  'cold': 'Low CH in zone, anything on outer half',
+  'hot': 'Middle-low in the zone'
+},
+{
+  'name': 'John Russell',
+  'pos': 'C',
+  'avg': 0.231,
+  'ops': 0.844,
+  'gp': 9,
+  'rhpAvg': 0.167,
+  'rhpOps': 0.75,
+  'lhpAvg': 0.3,
+  'lhpOps': 0.933,
+  'rhpChase': 0.23,
+  'rhpWhiff': 0.05,
+  'lhpChase': 0.07,
+  'lhpWhiff': 0.07,
+  'pitchData': {'FB':{'avgOps':'.400/1.156', 'opsVal':1.156, 'chase':0.15, 'whiff':0.0, 'swing':0.44}, 'BB':{'avgOps':'.222/.967', 'opsVal':0.967, 'chase':0.08, 'whiff':0.18, 'swing':0.31}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.5, 'whiff':0.0, 'swing':0.44}},
+  'rl': 'Overall better numbers vs RHP, more Ks though, If whiff  and oppo approach fixed , will be good vs LHP',
+  'risp': '.238/.751, 50% K Rate. Being pitched strictly on outer half and chases outer FB, leading to K and weak contact',
+  'cold': 'FB up and chasing outside, BB and OFS low and out',
+  'hot': 'Kills middle and middle low pitches, highest EV and best quality swings'
+},
+{
+  'name': 'Tyler Shannon',
+  'pos': 'IF/1B',
+  'avg': 0.206,
+  'ops': 0.645,
+  'gp': 10,
+  'rhpAvg': 0.143,
+  'rhpOps': 0.635,
+  'lhpAvg': 0.267,
+  'lhpOps': 0.734,
+  'rhpChase': 0.27,
+  'rhpWhiff': 0.32,
+  'lhpChase': 0.47,
+  'lhpWhiff': 0.35,
+  'pitchData': {'FB':{'avgOps':'.417/1.200', 'opsVal':1.2, 'chase':0.23, 'whiff':0.29, 'swing':0.54}, 'BB':{'avgOps':'.091/.447', 'opsVal':0.447, 'chase':0.45, 'whiff':0.29, 'swing':0.49}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.75, 'whiff':0.43, 'swing':0.54}},
+  'rl': 'Great vs LHP, lowers Whiff, but chase is higher, RHP numbers still good',
+  'risp': '.400/1.038, Still Whiff but drove guys in when needed. Pitched on outer half with FB and up and in, as well as tons of CB/SL low in zone for strikes',
+  'cold': 'Sinking FB, and FB up and in, OFS and Breakers low and away',
+  'hot': 'FB middle away (but pulling them), Staying on hanging gimme pitches early'
+},
+{
+  'name': 'Ben Schulz',
+  'pos': 'OF',
+  'avg': 0.154,
+  'ops': 0.862,
+  'gp': 8,
+  'rhpAvg': 0.1,
+  'rhpOps': 0.675,
+  'lhpAvg': 0.333,
+  'lhpOps': 1.5,
+  'rhpChase': 0.12,
+  'rhpWhiff': 0.43,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.33,
+  'pitchData': {'FB':{'avgOps':'.286/1.440', 'opsVal':1.44, 'chase':0.14, 'whiff':0.35, 'swing':0.44}, 'BB':{'avgOps':'.000/.200', 'opsVal':0.2, 'chase':0.0, 'whiff':0.5, 'swing':0.17}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':1.0, 'swing':0.44}},
+  'rl': 'Small sample,  far better versus RHP, insane whiff and chase vs LHP. Should be Righty specialist',
+  'risp': '1 for 5 with a homer, 4 K\'s outside of that, flyball heavy so would be great with runner on 3rd needing a sac fly. Contact isn\'t consistent to rely on though.',
+  'cold': 'Anything on the outer half',
+  'hot': 'Low middle-in, north south swing will clear out those pitches'
+},
+{
+  'name': 'Jon Melarczik',
+  'pos': 'IF',
+  'avg': 0.143,
+  'ops': 0.429,
+  'gp': 3,
+  'rhpAvg': 0.143,
+  'rhpOps': 0.429,
+  'lhpAvg': 0.0,
+  'lhpOps': 0.0,
+  'rhpChase': 0.0,
+  'rhpWhiff': 0.25,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.0,
+  'pitchData': {'FB':{'avgOps':'.167/.500', 'opsVal':0.5, 'chase':0.0, 'whiff':0.2, 'swing':0.67}, 'BB':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.0, 'swing':0.0}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.5, 'swing':0.67}},
+  'rl': null,
+  'risp': null,
+  'cold': null,
+  'hot': null
+},
+{
+  'name': 'Evin Curtiss',
+  'pos': 'OF',
+  'avg': 0.0,
+  'ops': 0.143,
+  'gp': 4,
+  'rhpAvg': 0.0,
+  'rhpOps': 0.167,
+  'lhpAvg': 0.0,
+  'lhpOps': 0.0,
+  'rhpChase': 0.0,
+  'rhpWhiff': 0.33,
+  'lhpChase': 0.0,
+  'lhpWhiff': 0.0,
+  'pitchData': {'FB':{'avgOps':'.000/.333', 'opsVal':0.333, 'chase':0.0, 'whiff':0.75, 'swing':0.57}, 'BB':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.0, 'swing':0.25}, 'OFS':{'avgOps':'.000/.000', 'opsVal':0, 'chase':0.0, 'whiff':0.0, 'swing':0.57}},
+  'rl': 'Small sample overall, had success vs LHP and struggled vs RHP, good discipline either way',
+  'risp': '1 for 8, very fly ball oriented but laziley, not too many opportunities either',
+  'cold': 'FB away and elevated, BB away',
+  'hot': 'Low FB, being able to go down and get it with vertical bat path, and any mistakes in-zone'
+},
+{
+  'name': 'Joe Guglielmino',
+  'pos': '—',
+  'avg': 0.0,
+  'ops': 0.6,
+  'gp': 2,
+  'rhpAvg': null,
+  'rhpOps': null,
+  'lhpAvg': null,
+  'lhpOps': null,
+  'rhpChase': null,
+  'rhpWhiff': null,
+  'lhpChase': null,
+  'lhpWhiff': null,
+  'pitchData': null,
+  'rl': null,
+  'risp': null,
+  'cold': null,
+  'hot': null
+}
+];
+const pitchers2026 = [
+{
+  'name': 'Anthony Bubba',
+  'hand': 'R',
+  'era': 3.18,
+  'whip': 1.09,
+  'ip': 34.0,
+  'fbPct': 0.41,
+  'slPct': 0.51,
+  'cbPct': 0.06,
+  'chPct': 0.03,
+  'rhhAvgOps': '.164/.670',
+  'lhhAvgOps': '.350/.900',
+  'rhhChase': 0.24,
+  'rhhWhiff': 0.29,
+  'lhhChase': 0.4,
+  'lhhWhiff': 0.3,
+  'rhhStrike': 0.64,
+  'lhhStrike': 0.6,
+  'rhhKbb': '13 to 3',
+  'lhhKbb': '9 to 4',
+  'riscpOps': '.105/.577',
+  'pitchDetails': {'FB':{'avgOps':'.250/.913', 'chase':0.19, 'whiff':0.19, 'swing':0.38, 'strike':0.57}, 'SL':{'avgOps':'.162/.502', 'chase':0.33, 'whiff':0.39, 'swing':0.43, 'strike':0.67}, 'CB':{'avgOps':'.000/.500', 'chase':0.0, 'whiff':0.5, 'swing':0.53, 'strike':0.53}, 'CH':{'avgOps':'.000/.000', 'chase':0.0, 'whiff':0.5, 'swing':0.22, 'strike':0.33}},
+  'levScore': 0.734,
+  'levRank': 3
+},
+{
+  'name': 'Michael Featherstone',
+  'hand': 'R',
+  'era': 1.88,
+  'whip': 0.84,
+  'ip': 14.1,
+  'fbPct': 0.68,
+  'slPct': 0.27,
+  'cbPct': null,
+  'chPct': 0.03,
+  'rhhAvgOps': '.233/.625',
+  'lhhAvgOps': '.071/.306',
+  'rhhChase': 0.13,
+  'rhhWhiff': 0.24,
+  'lhhChase': 0.06,
+  'lhhWhiff': 0.31,
+  'rhhStrike': 0.69,
+  'lhhStrike': 0.6,
+  'rhhKbb': '9 to 1',
+  'lhhKbb': '6 to 3',
+  'riscpOps': '.308/.862',
+  'pitchDetails': {'FB':{'avgOps':'.148/.355', 'chase':0.1, 'whiff':0.33, 'swing':0.45, 'strike':0.7}, 'SL':{'avgOps':'.200/.761', 'chase':0.14, 'whiff':0.13, 'swing':0.32, 'strike':0.6}, 'CH':{'avgOps':'.500/1.000', 'chase':0.0, 'whiff':0.0, 'swing':0.44, 'strike':0.44}},
+  'levScore': 0.845,
+  'levRank': 1
+},
+{
+  'name': 'Sean Stanley',
+  'hand': 'R',
+  'era': 7.36,
+  'whip': 1.64,
+  'ip': 7.1,
+  'fbPct': 0.48,
+  'slPct': 48.0,
+  'cbPct': 0.04,
+  'chPct': null,
+  'rhhAvgOps': '.269/.730',
+  'lhhAvgOps': '1 for 4',
+  'rhhChase': 0.16,
+  'rhhWhiff': 0.3,
+  'lhhChase': 0.13,
+  'lhhWhiff': 0.0,
+  'rhhStrike': 0.57,
+  'lhhStrike': 0.48,
+  'rhhKbb': '7 to 3',
+  'lhhKbb': '0 to 1',
+  'riscpOps': '.125/.425',
+  'pitchDetails': {'FB':{'avgOps':'.333/.977', 'chase':0.0, 'whiff':0.07, 'swing':0.42, 'strike':0.59}, 'SL':{'avgOps':'.083/.397', 'chase':0.24, 'whiff':0.45, 'swing':0.32, 'strike':0.52}, 'CB':{'avgOps':'.500/1.000', 'chase':0.25, 'whiff':0.67, 'swing':0.5, 'strike':0.5}},
+  'levScore': 0.654,
+  'levRank': 6
+},
+{
+  'name': 'Tyler Blumetti',
+  'hand': 'R',
+  'era': 0.0,
+  'whip': 1.0,
+  'ip': 1.0,
+  'fbPct': null,
+  'slPct': null,
+  'cbPct': null,
+  'chPct': null,
+  'rhhAvgOps': 'None',
+  'lhhAvgOps': 'None',
+  'rhhChase': null,
+  'rhhWhiff': null,
+  'lhhChase': null,
+  'lhhWhiff': null,
+  'rhhStrike': null,
+  'lhhStrike': null,
+  'rhhKbb': 'None',
+  'lhhKbb': 'None',
+  'riscpOps': 'None',
+  'pitchDetails': null,
+  'levScore': null,
+  'levRank': null
+},
+{
+  'name': 'Justin Gouin',
+  'hand': 'R',
+  'era': 9.0,
+  'whip': 1.87,
+  'ip': 15.0,
+  'fbPct': 0.56,
+  'slPct': 0.19,
+  'cbPct': 0.11,
+  'chPct': 0.14,
+  'rhhAvgOps': '.265/.964',
+  'lhhAvgOps': '.250/1.004',
+  'rhhChase': 0.31,
+  'rhhWhiff': 0.25,
+  'lhhChase': 0.42,
+  'lhhWhiff': 0.2,
+  'rhhStrike': 0.67,
+  'lhhStrike': 0.63,
+  'rhhKbb': '10 to 7',
+  'lhhKbb': '5 to 2',
+  'riscpOps': '.188/.703',
+  'pitchDetails': {'FB':{'avgOps':'.333/1.141', 'chase':0.3, 'whiff':0.14, 'swing':0.46, 'strike':0.66}, 'SL':{'avgOps':'.250/.750', 'chase':0.32, 'whiff':0.2, 'swing':0.48, 'strike':0.63}, 'CB':{'avgOps':'.167/.786', 'chase':0.0, 'whiff':0.38, 'swing':0.45, 'strike':0.59}, 'CH':{'avgOps':'.143/.821', 'chase':0.47, 'whiff':0.36, 'swing':0.4, 'strike':0.49}},
+  'levScore': 0.652,
+  'levRank': 7
+},
+{
+  'name': 'Sam Smith',
+  'hand': 'R',
+  'era': 2.7,
+  'whip': 1.8,
+  'ip': 10.0,
+  'fbPct': 0.55,
+  'slPct': 0.34,
+  'cbPct': 0.03,
+  'chPct': 0.08,
+  'rhhAvgOps': '.229/.757',
+  'lhhAvgOps': '.229/.582',
+  'rhhChase': 0.2,
+  'rhhWhiff': 0.15,
+  'lhhChase': 0.12,
+  'lhhWhiff': 0.15,
+  'rhhStrike': 0.66,
+  'lhhStrike': 0.52,
+  'rhhKbb': '4 to 2',
+  'lhhKbb': '1 to 4',
+  'riscpOps': '.158/.504',
+  'pitchDetails': {'FB':{'avgOps':'.176/.616', 'chase':0.17, 'whiff':0.17, 'swing':0.44, 'strike':0.61}, 'SL':{'avgOps':'.111/.555', 'chase':0.18, 'whiff':0.09, 'swing':0.35, 'strike':0.62}, 'CB':{'avgOps':'.000/.000', 'chase':0.0, 'whiff':0.33, 'swing':0.6, 'strike':0.8}, 'CH':{'avgOps':'.667/1.417', 'chase':0.1, 'whiff':0.2, 'swing':0.33, 'strike':0.47}},
+  'levScore': 0.585,
+  'levRank': 9
+},
+{
+  'name': 'Evan Gentile',
+  'hand': 'R',
+  'era': 31.91,
+  'whip': 3.55,
+  'ip': 3.2,
+  'fbPct': 0.56,
+  'slPct': 0.36,
+  'cbPct': 0.02,
+  'chPct': 0.06,
+  'rhhAvgOps': '.300/.762',
+  'lhhAvgOps': '.500/1.100',
+  'rhhChase': 0.0,
+  'rhhWhiff': 0.06,
+  'lhhChase': 0.25,
+  'lhhWhiff': 0.2,
+  'rhhStrike': 0.57,
+  'lhhStrike': 0.64,
+  'rhhKbb': '1 to 2',
+  'lhhKbb': '0 to 1',
+  'riscpOps': '.375/.875',
+  'pitchDetails': {'FB':{'avgOps':'.333/.889', 'chase':0.13, 'whiff':0.0, 'swing':0.41, 'strike':0.57}, 'SL':{'avgOps':'.375/.819', 'chase':0.0, 'whiff':0.27, 'swing':0.46, 'strike':0.67}, 'CH':{'avgOps':'.000/.000', 'chase':0.0, 'whiff':0.0, 'swing':0.5, 'strike':0.5}},
+  'levScore': 0.504,
+  'levRank': 12
+},
+{
+  'name': 'Jeffrey Blake',
+  'hand': 'R',
+  'era': 11.7,
+  'whip': 2.3,
+  'ip': 10.0,
+  'fbPct': 0.68,
+  'slPct': 0.1,
+  'cbPct': 0.1,
+  'chPct': 0.14,
+  'rhhAvgOps': '.270/.929',
+  'lhhAvgOps': '.308/.884',
+  'rhhChase': 0.05,
+  'rhhWhiff': 0.36,
+  'lhhChase': 0.13,
+  'lhhWhiff': 0.21,
+  'rhhStrike': 0.55,
+  'lhhStrike': 0.37,
+  'rhhKbb': '7 to 5',
+  'lhhKbb': '1 to 5',
+  'riscpOps': '.357/1.305',
+  'pitchDetails': {'FB':{'avgOps':'.222/.780', 'chase':0.09, 'whiff':0.3, 'swing':0.39, 'strike':0.6}, 'SL':{'avgOps':'1.000/2.000', 'chase':0.0, 'whiff':0.29, 'swing':0.37, 'strike':0.42}, 'CB':{'avgOps':'.000/.000', 'chase':0.2, 'whiff':0.29, 'swing':0.37, 'strike':0.47}, 'CH':{'avgOps':'.333/1.500', 'chase':0.0, 'whiff':0.33, 'swing':0.23, 'strike':0.35}},
+  'levScore': 0.561,
+  'levRank': 10
+},
+{
+  'name': 'Michael Greco',
+  'hand': 'R',
+  'era': 1.0,
+  'whip': 1.44,
+  'ip': 9.0,
+  'fbPct': 0.45,
+  'slPct': 0.44,
+  'cbPct': 0.1,
+  'chPct': 0.02,
+  'rhhAvgOps': '.211/.655',
+  'lhhAvgOps': '.185/.489',
+  'rhhChase': 0.2,
+  'rhhWhiff': 0.33,
+  'lhhChase': 0.11,
+  'lhhWhiff': 0.25,
+  'rhhStrike': 0.54,
+  'lhhStrike': 0.52,
+  'rhhKbb': '7 to 6 ',
+  'lhhKbb': '3 to 2',
+  'riscpOps': '.167/.667',
+  'pitchDetails': {'FB':{'avgOps':'.077/.445 ', 'chase':0.21, 'whiff':0.28, 'swing':0.36, 'strike':0.49}, 'SL':{'avgOps':'.300/.800', 'chase':0.18, 'whiff':0.38, 'swing':0.23, 'strike':0.59}, 'CB':{'avgOps':'.500/1.167', 'chase':0.0, 'whiff':0.0, 'swing':0.13, 'strike':0.53}},
+  'levScore': 0.656,
+  'levRank': 5
+},
+{
+  'name': 'Logan Huzi',
+  'hand': 'R',
+  'era': 13.5,
+  'whip': 2.75,
+  'ip': 4.0,
+  'fbPct': 0.43,
+  'slPct': 0.35,
+  'cbPct': 0.1,
+  'chPct': 0.12,
+  'rhhAvgOps': '.643/1.381',
+  'lhhAvgOps': '.143/.286',
+  'rhhChase': 0.0,
+  'rhhWhiff': 0.09,
+  'lhhChase': 0.0,
+  'lhhWhiff': 0.1,
+  'rhhStrike': 0.58,
+  'lhhStrike': 0.58,
+  'rhhKbb': '1 to 1',
+  'lhhKbb': '0 to 0',
+  'riscpOps': '.429/1.071',
+  'pitchDetails': {'FB':{'avgOps':'.500/1.167', 'chase':0.0, 'whiff':0.07, 'swing':0.41, 'strike':0.56}, 'SL':{'avgOps':'.300/.666', 'chase':0.0, 'whiff':0.1, 'swing':0.36, 'strike':0.64}, 'CB':{'avgOps':'1.000/2.000', 'chase':0.0, 'whiff':0.0, 'swing':0.13, 'strike':0.38}, 'CH':{'avgOps':'.600/1.200', 'chase':0.0, 'whiff':0.14, 'swing':0.7, 'strike':0.7}},
+  'levScore': 0.534,
+  'levRank': 11
+},
+{
+  'name': 'Julian Rondon',
+  'hand': 'L',
+  'era': 7.82,
+  'whip': 2.61,
+  'ip': 12.2,
+  'fbPct': 0.66,
+  'slPct': 0.1,
+  'cbPct': 0.04,
+  'chPct': 0.2,
+  'rhhAvgOps': '.375/1.069',
+  'lhhAvgOps': '.222/1.118',
+  'rhhChase': 0.22,
+  'rhhWhiff': 0.4,
+  'lhhChase': 0.2,
+  'lhhWhiff': 0.48,
+  'rhhStrike': 0.62,
+  'lhhStrike': 0.54,
+  'rhhKbb': '16 to 9 ',
+  'lhhKbb': '7 to 5',
+  'riscpOps': '.259/.845',
+  'pitchDetails': {'FB':{'avgOps':'.500/1.366', 'chase':0.1, 'whiff':0.37, 'swing':0.43, 'strike':0.63}, 'SL':{'avgOps':'1.43/.714', 'chase':0.11, 'whiff':0.33, 'swing':0.21, 'strike':0.41}, 'CB':{'avgOps':'.000/.333', 'chase':0.25, 'whiff':0.33, 'swing':0.23, 'strike':0.54}, 'CH':{'avgOps':'.286/.804', 'chase':0.5, 'whiff':0.47, 'swing':0.52, 'strike':0.62}},
+  'levScore': 0.667,
+  'levRank': 4
+},
+{
+  'name': 'Joe Dooley',
+  'hand': 'R',
+  'era': 3.32,
+  'whip': 1.68,
+  'ip': 19.0,
+  'fbPct': 0.37,
+  'slPct': 0.09,
+  'cbPct': 0.31,
+  'chPct': 0.24,
+  'rhhAvgOps': '.333/.802',
+  'lhhAvgOps': '.333/1.033',
+  'rhhChase': 0.31,
+  'rhhWhiff': 0.23,
+  'lhhChase': 0.25,
+  'lhhWhiff': 0.26,
+  'rhhStrike': 0.68,
+  'lhhStrike': 0.65,
+  'rhhKbb': '9 to 3',
+  'lhhKbb': '1 to 0',
+  'riscpOps': '.360/.814',
+  'pitchDetails': {'FB':{'avgOps':'.417/1.045', 'chase':0.13, 'whiff':0.11, 'swing':0.49, 'strike':0.65}, 'SL':{'avgOps':'.333/.666', 'chase':0.0, 'whiff':0.33, 'swing':0.33, 'strike':0.5}, 'CB':{'avgOps':'.467/1.062', 'chase':0.35, 'whiff':0.08, 'swing':0.41, 'strike':0.69}, 'CH':{'avgOps':'.308/.641', 'chase':0.45, 'whiff':0.48, 'swing':0.66, 'strike':0.72}},
+  'levScore': 0.748,
+  'levRank': 2
+},
+{
+  'name': 'Joseph Ferrucci',
+  'hand': 'R',
+  'era': 0.0,
+  'whip': 3.0,
+  'ip': 2.1,
+  'fbPct': 0.62,
+  'slPct': 0.23,
+  'cbPct': null,
+  'chPct': 0.15,
+  'rhhAvgOps': '.333/.944',
+  'lhhAvgOps': '.000/1.000',
+  'rhhChase': 0.09,
+  'rhhWhiff': 0.38,
+  'lhhChase': 0.0,
+  'lhhWhiff': 0.0,
+  'rhhStrike': 0.51,
+  'lhhStrike': 0.0,
+  'rhhKbb': '3 to 3',
+  'lhhKbb': '0 to 1',
+  'riscpOps': '.167/.833',
+  'pitchDetails': {'FB':{'avgOps':'.500/1.500', 'chase':0.13, 'whiff':0.14, 'swing':0.21, 'strike':0.45}, 'SL':{'avgOps':'.500/1.000', 'chase':0.0, 'whiff':0.5, 'swing':0.5, 'strike':0.58}, 'CH':{'avgOps':'.000/.000', 'chase':0.0, 'whiff':0.67, 'swing':0.38, 'strike':0.38}},
+  'levScore': null,
+  'levRank': null
+},
+{
+  'name': 'Peter Morrissey',
+  'hand': 'L',
+  'era': 54.0,
+  'whip': 7.5,
+  'ip': 0.2,
+  'fbPct': 0.66,
+  'slPct': 0.13,
+  'cbPct': 0.19,
+  'chPct': 0.03,
+  'rhhAvgOps': '.500/1.238',
+  'lhhAvgOps': '.000/1.000',
+  'rhhChase': 0.0,
+  'rhhWhiff': 0.2,
+  'lhhChase': 0.0,
+  'lhhWhiff': 0.0,
+  'rhhStrike': 0.47,
+  'lhhStrike': 0.43,
+  'rhhKbb': '1 to 1',
+  'lhhKbb': '0 to 1',
+  'riscpOps': '.500/1.417',
+  'pitchDetails': {'FB':{'avgOps':'.000/.667', 'chase':0.0, 'whiff':0.17, 'swing':0.29, 'strike':0.48}, 'SL':{'avgOps':'.000/.000', 'chase':0.0, 'whiff':1.0, 'swing':0.25, 'strike':0.25}, 'CB':{'avgOps':'.500/1.500', 'chase':0.0, 'whiff':0.0, 'swing':0.33, 'strike':0.5}},
+  'levScore': null,
+  'levRank': null
+},
+{
+  'name': 'Mike DeRosa',
+  'hand': 'R',
+  'era': 54.0,
+  'whip': 6.0,
+  'ip': 0.2,
+  'fbPct': 0.51,
+  'slPct': 0.44,
+  'cbPct': null,
+  'chPct': 0.03,
+  'rhhAvgOps': '.333/.833',
+  'lhhAvgOps': '.000/.667',
+  'rhhChase': 0.0,
+  'rhhWhiff': 0.0,
+  'lhhChase': 0.0,
+  'lhhWhiff': 0.11,
+  'rhhStrike': 0.5,
+  'lhhStrike': 0.57,
+  'rhhKbb': '1 to 1',
+  'lhhKbb': '1 to 2',
+  'riscpOps': '1.000/2.000',
+  'pitchDetails': {'FB':{'avgOps':'.500/1.167', 'chase':0.0, 'whiff':0.0, 'swing':0.25, 'strike':0.5}, 'SL':{'avgOps':'.000/.333', 'chase':0.0, 'whiff':0.14, 'swing':0.41, 'strike':0.59}},
+  'levScore': null,
+  'levRank': null
+},
+{
+  'name': 'AJ Formato',
+  'hand': 'R',
+  'era': 27.0,
+  'whip': 5.63,
+  'ip': 2.2,
+  'fbPct': 0.6,
+  'slPct': null,
+  'cbPct': 0.29,
+  'chPct': 0.1,
+  'rhhAvgOps': '.571/1.557',
+  'lhhAvgOps': '.800/1.633',
+  'rhhChase': 0.0,
+  'rhhWhiff': 0.38,
+  'lhhChase': 0.0,
+  'lhhWhiff': 0.0,
+  'rhhStrike': 0.5,
+  'lhhStrike': 0.38,
+  'rhhKbb': '2 to 2',
+  'lhhKbb': '0 to 1',
+  'riscpOps': '.667/1.505',
+  'pitchDetails': {'FB':{'avgOps':'.500/1.386', 'chase':0.0, 'whiff':0.33, 'swing':0.52, 'strike':0.66}, 'CB':{'avgOps':'.000/1.000', 'chase':0.0, 'whiff':0.0, 'swing':0.0, 'strike':0.21}},
+  'levScore': null,
+  'levRank': null
+},
+{
+  'name': 'Logan Smalley',
+  'hand': 'R',
+  'era': 3.86,
+  'whip': 1.61,
+  'ip': 9.1,
+  'fbPct': 0.62,
+  'slPct': null,
+  'cbPct': 39.0,
+  'chPct': 0.03,
+  'rhhAvgOps': '.250/.864',
+  'lhhAvgOps': '.214/.526',
+  'rhhChase': 0.1,
+  'rhhWhiff': 0.14,
+  'lhhChase': 0.06,
+  'lhhWhiff': 0.16,
+  'rhhStrike': 0.55,
+  'lhhStrike': 0.65,
+  'rhhKbb': '6 to 5',
+  'lhhKbb': '3 to 2',
+  'riscpOps': '.200/.533',
+  'pitchDetails': {'FB':{'avgOps':'.316/.868', 'chase':0.06, 'whiff':0.07, 'swing':0.33, 'strike':0.58}, 'CB':{'avgOps':'.143/.580', 'chase':0.12, 'whiff':0.24, 'swing':0.28, 'strike':0.61}},
+  'levScore': 0.641,
+  'levRank': 8
+}
+];
+const reports2026 = [
+{
+  'name': 'Tyler Shannon',
+  'rl': 'Great vs LHP, lowers Whiff, but chase is higher, RHP numbers still good',
+  'risp': '.400/1.038, Still Whiff but drove guys in when needed. Pitched on outer half with FB and up and in, as well as tons of CB/SL low in zone for strikes',
+  'cold': 'Sinking FB, and FB up and in, OFS and Breakers low and away',
+  'hot': 'FB middle away (but pulling them), Staying on hanging gimme pitches early'
+},
+{
+  'name': 'John Russell',
+  'rl': 'Overall better numbers vs RHP, more Ks though, If whiff  and oppo approach fixed , will be good vs LHP',
+  'risp': '.238/.751, 50% K Rate. Being pitched strictly on outer half and chases outer FB, leading to K and weak contact',
+  'cold': 'FB up and chasing outside, BB and OFS low and out',
+  'hot': 'Kills middle and middle low pitches, highest EV and best quality swings'
+},
+{
+  'name': 'Ryan Knight',
+  'rl': 'Better vs RHP, generates most power. Servicebale vs LHP but induces  weaker contact',
+  'risp': '.360/1.260, BB>K. Shows up when it matters, does damage and puts ball in play. Puts the ball in the air a ton. Being attacked all over with FB and OFS down',
+  'cold': 'Anything on the outer half, and low CH. Higher velos elevated',
+  'hot': 'Anything middle-low, inner quadrant is most successful. Lower velo on elevated stuff is good too'
+},
+{
+  'name': 'Ben Schulz',
+  'rl': 'Small sample,  far better versus RHP, insane whiff and chase vs LHP. Should be Righty specialist',
+  'risp': '1 for 5 with a homer, 4 K\'s outside of that, flyball heavy so would be great with runner on 3rd needing a sac fly. Contact isn\'t consistent to rely on though.',
+  'cold': 'Anything on the outer half',
+  'hot': 'Low middle-in, north south swing will clear out those pitches'
+},
+{
+  'name': 'Jackson Ciccone',
+  'rl': 'Much better vs RHP, Leftties induce weak contact',
+  'risp': '.267/.700, 19 RBI, puts the ball in play consistently, lot of GB to MIF, which can score runs',
+  'cold': 'Anything elevated, and inside for weak contact ',
+  'hot': 'Middle-low, most XBH and hard hits when on time with outside'
+},
+{
+  'name': 'Josh Kaplan',
+  'rl': 'Should only hit RHP, numbers miles better, and much less chase. LHP ton of chase and weaker contact',
+  'risp': '.364/.871, 13 RBI, reiterate great bat to ball skills, will get a guy over or hit, great bunter and GB hitter',
+  'cold': 'FB elevated and away, CH ',
+  'hot': 'Fastballs he can turn on '
+},
+{
+  'name': 'Cameron Boardman',
+  'rl': 'Good vs RHP, and great in small sample vs LHP (4 for 8)',
+  'risp': '.455/.975, big singles guy who can put ball in play, gets heavy dose of FB low and away with CH as well',
+  'cold': 'Low CH in zone, anything on outer half',
+  'hot': 'Middle-low in the zone'
+},
+{
+  'name': 'Nico DiGioia',
+  'rl': 'Good vs both, but cuts chase and whiff vs RHP (usually due to the CH)',
+  'risp': '3 for 12/.875, 3 BB and 3 Ks, gets the ball in the air a ton, just adds a lot of whiff depending on pitcher',
+  'cold': 'CH/SL away, FB up and away when doesn\'t extend',
+  'hot': 'FB middle low, and can catch up to elevated stuff. Stay on outer half and he won\'t have many holes'
+},
+{
+  'name': 'Patrick Joseph',
+  'rl': 'Obviosuly switch hitter, but better overall swings vs RHP, still solid vs LHP, just less XBH potential',
+  'risp': '.381/1.004, even BB and K, will put the ball in play to right side, good for quick contact',
+  'cold': 'Any pitch on outer half',
+  'hot': 'Middle in, any pitches that move vertically (High FB, Low CH) he can catch up to either'
+},
+{
+  'name': 'Jeremy Mangiameli',
+  'rl': 'Very good vs RHP, but soldi vs Leftties, little more chase',
+  'risp': '.300/.843, even BB and K, attacked middle-away with FB primarily elevated, with heavy mix of breakers, lots of waste pitches',
+  'cold': 'Elevated FB or low Sinkers, not pitched much on inside',
+  'hot': 'Middle low pitches, any BB that sit in the zone'
+},
+{
+  'name': 'Alek Popovich',
+  'rl': 'Excels against either, in small sample rakes versus LHP and chases less',
+  'risp': '.407/1.264, BB>K, Shows up when it matters 18 RBI with RISP. Heavy FB attack on both sides of plate, middle-low, and high CB early',
+  'cold': 'Low zone, and OFS on outer half (pulls head and body out)',
+  'hot': 'Middle-up on either half, almost exclusively FB (77% of hits, 61% of BIP)'
+},
+{
+  'name': 'JJ Romatzick',
+  'rl': 'Excels against either, but chases much more vs LHP',
+  'risp': '.465/1.086, BB=K. Most consistent contact guy on the team , will put the ball in play, 28 RBIs with RISP. Attacked FB elevated and away, BB away, OFS down',
+  'cold': 'Elevated FB, SL/CH middle away',
+  'hot': 'Evrything on middle-lower third ,outer half too. GB/LD approach, don\'t climb ladder'
+},
+{
+  'name': 'Peyton West',
+  'rl': 'Higher sample vs RHP, minimal whiff and chase, but great numbers in small LHP sample',
+  'risp': '.462/1.390, pitched mainly middle away, in limited chances succeeded in RISP situations (6 for 13, 2 HRs, 10 RBI). GB/FB mix',
+  'cold': 'BB away, elevated FB',
+  'hot': 'Middle-away in lower quad, most success going other way but ability to turn on it'
+},
+{
+  'name': 'Evin Curtiss',
+  'rl': 'Small sample overall, had success vs LHP and struggled vs RHP, good discipline either way',
+  'risp': '1 for 8, very fly ball oriented but laziley, not too many opportunities either',
+  'cold': 'FB away and elevated, BB away',
+  'hot': 'Low FB, being able to go down and get it with vertical bat path, and any mistakes in-zone'
+},
+{
+  'name': 'Zaynn Godbee',
+  'rl': 'Career shows great numbers vs RHP, but struggles versus LHP, draws walks but is 0 for 12 career wise',
+  'risp': '.077/.265, struggled in small sample this year, just due to whiff on high FB, low CH. Was miles better in \'24 (.455/1.145, No K\'s in 15 PA)',
+  'cold': 'Middle-up FB, SL/CB low and away',
+  'hot': 'Middle away pitches, backside power'
+}
+];
+
+// ══════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════
+function colorOPS(v)  { if(typeof v!=='number') return 'neutral'; return v>=1.0?'good':v>=.800?'ok':'bad'; }
+function colorAVG(v)  { if(typeof v!=='number') return 'neutral'; return v>=.330?'good':v>=.270?'ok':'bad'; }
+function fmtAvg(v)    { if(typeof v!=='number') return v||'—'; return v.toFixed(3).replace('0.','.'); }
+function fmtOPS(v)    { if(typeof v!=='number') return v||'—'; return v.toFixed(3).replace('0.','.'); }
+function fmtPct(v)    { if(typeof v!=='number') return '—'; return (v*100).toFixed(0)+'%'; }
+
+function getBetterSide(h) {
+  const r = typeof h.rhpOps==='number'?h.rhpOps:0;
+  const l = typeof h.lhpOps==='number'?h.lhpOps:0;
+  if(Math.abs(r-l)<0.08) return 'even';
+  return r>l?'rhp':'lhp';
+}
+
+function parseOPS(str) {
+  if(!str||str==='—') return 0;
+  const m = str.match(/(\d*\.?\d+)$/);
+  if(m) { const v=parseFloat(m[1]); if(v>0&&v<5) return v; }
+  // "X for Y" small sample → neutral
+  return 0.65;
+}
+
+function bestPitch(pd) {
+  if(!pd) return null;
+  let best=null, bestOps=0;
+  for(const [key,val] of Object.entries(pd)) {
+    const ops = parseOPS(val.avgOps);
+    if(ops>bestOps) { bestOps=ops; best={key,val,ops}; }
+  }
+  return best;
+}
+
+function placeholder2026() {
+  return `<div class="season-placeholder">
+    <div class="season-placeholder-year">2026</div>
+    <div class="season-placeholder-label">Season In Progress</div>
+    <div class="season-placeholder-sub">Add player data to the 2026 arrays in the script.<br>Supports fbVelo field for high-velo matchup scoring.</div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+//  RENDER SPLITS
+// ══════════════════════════════════════════
+function renderSplits(filter) {
+  activeSplitFilter = filter;
+  const pool = currentSeason==='2026'?hitters2026:hitters;
+  const q    = (document.getElementById('splits-search')?.value||'').toLowerCase();
+  const cont = document.getElementById('splits-list');
+  if(pool.length===0){cont.innerHTML=placeholder2026();return;}
+
+  const tagMap = {
+    rhp:  '<span class="better-tag rhp">Better vs RHP</span>',
+    lhp:  '<span class="better-tag lhp">Better vs LHP</span>',
+    even: '<span class="better-tag even">Both Sides</span>',
+  };
+
+  let data = pool
+    .filter(h=>h.gp>=3)
+    .filter(h=>!q||h.name.toLowerCase().includes(q))
+    .filter(h=>{
+      if(filter==='all') return true;
+      const s=getBetterSide(h);
+      return filter==='even'?s==='even':s===filter;
+    })
+    .sort((a,b)=>b.ops-a.ops);
+
+  const pitchColors={FB:'#ef4444',BB:'#a78bfa',OFS:'#3b82f6'};
+
+  cont.innerHTML = data.map((h,i)=>{
+    const better = getBetterSide(h);
+    const bp     = bestPitch(h.pitchData);
+    let pitchNoteHtml = '';
+    if(h.pitchData){
+      const entries = Object.entries(h.pitchData);
+      const parts = entries.map(([k,v])=>{
+        const c = pitchColors[k]||'#999';
+        return `<span><span style="color:${c};font-weight:600;">${k}</span>&nbsp;${v.avgOps}</span>`;
+      });
+      pitchNoteHtml = `<div class="pitch-note">
+        <span class="pitch-note-label">By Pitch</span>
+        ${parts.join('')}
+        ${bp&&bp.ops>=0.9?`<span style="color:var(--green);font-size:10px;">🔥 Hits ${bp.key} hard</span>`:''}
+      </div>`;
+    }
+
+    return `
+    <div class="player-card">
+      <div class="player-header">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <div class="player-name">${h.name}</div>
+          <div class="player-pos">${h.pos}</div>
+        </div>
+        <div class="rank-badge">#${i+1}</div>
+      </div>
+      <div class="stat-row" style="margin-bottom:12px;">
+        <div class="stat-chip"><span class="stat-label">AVG</span><span class="stat-val ${colorAVG(h.avg)}">${fmtAvg(h.avg)}</span></div>
+        <div class="stat-chip"><span class="stat-label">OPS</span><span class="stat-val ${colorOPS(h.ops)}">${fmtOPS(h.ops)}</span></div>
+        <div class="stat-chip"><span class="stat-label">GP</span><span class="stat-val neutral">${h.gp}</span></div>
+      </div>
+      <div class="split-cols">
+        <div class="split-block">
+          <div class="split-label vs-rhp">vs RHP</div>
+          <div class="split-main-stat ${colorAVG(h.rhpAvg)}">${fmtAvg(h.rhpAvg)}</div>
+          <div class="split-ops">OPS ${fmtOPS(h.rhpOps)}</div>
+          <div style="margin-top:7px;display:flex;gap:4px;flex-wrap:wrap;">
+            <span class="stat-chip" style="padding:3px 7px;"><span class="stat-label">Chase</span><span class="stat-val ${h.rhpChase>.30?'bad':'ok'}" style="font-size:12px;">${fmtPct(h.rhpChase)}</span></span>
+            <span class="stat-chip" style="padding:3px 7px;"><span class="stat-label">Whiff</span><span class="stat-val ${h.rhpWhiff>.30?'bad':'ok'}" style="font-size:12px;">${fmtPct(h.rhpWhiff)}</span></span>
+          </div>
+        </div>
+        <div class="split-block">
+          <div class="split-label vs-lhp">vs LHP</div>
+          <div class="split-main-stat ${colorAVG(h.lhpAvg)}">${fmtAvg(h.lhpAvg)}</div>
+          <div class="split-ops">OPS ${fmtOPS(h.lhpOps)}</div>
+          <div style="margin-top:7px;display:flex;gap:4px;flex-wrap:wrap;">
+            <span class="stat-chip" style="padding:3px 7px;"><span class="stat-label">Chase</span><span class="stat-val ${h.lhpChase>.30?'bad':'ok'}" style="font-size:12px;">${fmtPct(h.lhpChase)}</span></span>
+            <span class="stat-chip" style="padding:3px 7px;"><span class="stat-label">Whiff</span><span class="stat-val ${h.lhpWhiff>.30?'bad':'ok'}" style="font-size:12px;">${fmtPct(h.lhpWhiff)}</span></span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;">${tagMap[better]}</div>
+      ${pitchNoteHtml}
+    </div>`;
+  }).join('');
+}
+
+function filterSplits(type, btn) {
+  document.querySelectorAll('#page-splits .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSplits(type);
+}
+
+// ══════════════════════════════════════════
+//  MATCHUP TOOL
+// ══════════════════════════════════════════
+function selectOpt(btn) {
+  const group = btn.dataset.group;
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function getOpt(group) {
+  return document.querySelector(`[data-group="${group}"].selected`)?.dataset?.val;
+}
+
+function generateMatchup() {
+  const pool    = currentSeason==='2026'?hitters2026:hitters;
+  const output  = document.getElementById('matchup-output');
+  if(pool.length===0){output.innerHTML=placeholder2026();return;}
+
+  const hand    = getOpt('hand')  || 'R';
+  const primary = getOpt('pitch') || 'fb';
+  const isLHP   = hand==='L';
+
+  const fbW  = primary==='fb'    ? 0.55 : primary==='mixed' ? 0.30 : primary==='none' ? 0.20 : 0.15;
+  const bbW  = primary==='bb'    ? 0.55 : primary==='mixed' ? 0.30 : primary==='none' ? 0.20 : 0.10;
+  const ofsW = primary==='none'  ? 0.20 : 0.15;
+
+  const scored = pool
+    .filter(h=>h.gp>=3)
+    .map(h=>{
+      const baseOps = isLHP
+        ? (typeof h.lhpOps==='number'?h.lhpOps:0)
+        : (typeof h.rhpOps==='number'?h.rhpOps:0);
+
+      const fbOps  = h.pitchData?.FB  ? parseOPS(h.pitchData.FB.avgOps)  : baseOps;
+      const bbOps  = h.pitchData?.BB  ? parseOPS(h.pitchData.BB.avgOps)  : baseOps;
+      const ofsOps = h.pitchData?.OFS ? parseOPS(h.pitchData.OFS.avgOps) : baseOps;
+
+      let score = baseOps*0.40 + fbOps*fbW + bbOps*bbW + ofsOps*ofsW;
+
+      // LHP avoidance penalty
+      if(isLHP && typeof h.lhpOps==='number' && h.lhpOps<0.600) score -= 0.15;
+
+      const warnings = [];
+      if(isLHP && typeof h.lhpOps==='number' && h.lhpOps<0.600) warnings.push('⚠ vs LHP');
+
+      const reasonParts=[];
+      if(primary==='fb'&&h.pitchData?.FB)    reasonParts.push(`FB ${h.pitchData.FB.avgOps}`);
+      if(primary==='bb'&&h.pitchData?.BB)    reasonParts.push(`BB ${h.pitchData.BB.avgOps}`);
+      if(primary==='mixed'&&h.pitchData?.FB) reasonParts.push(`FB ${h.pitchData.FB.avgOps}`);
+      if(primary==='none') {
+        const best = ['FB','BB','OFS'].find(k=>h.pitchData?.[k]);
+        if(best) reasonParts.push(`${best} ${h.pitchData[best].avgOps}`);
+      }
+      reasonParts.push(isLHP ? `LHP OPS ${fmtOPS(h.lhpOps)}` : `RHP OPS ${fmtOPS(h.rhpOps)}`);
+
+      return { h, score, reason: reasonParts.join(' · '), warnings };
+    })
+    .sort((a,b)=>b.score-a.score);
+
+  const handLabel  = isLHP?'LHP':'RHP';
+  const pitchLabel = primary==='none'?'No Preference':primary==='fb'?'FB Heavy':primary==='bb'?'Breaking Ball':'Mixed';
+
+  output.innerHTML = `
+    <div class="matchup-result-card">
+      <div class="matchup-header">
+        <span style="font-size:18px;">⚾</span>
+        <span class="matchup-title">vs ${handLabel} · ${pitchLabel}</span>
+        <span class="matchup-desc">${currentSeason} DATA</span>
+      </div>
+      ${scored.map((s,i)=>`
+        <div class="matchup-row">
+          <div class="matchup-num">${i+1}</div>
+          <div class="matchup-player">
+            <div class="matchup-player-name">${s.h.name}${s.warnings.map(w=>`<span class="warn-tag">${w}</span>`).join('')}</div>
+            <div class="matchup-player-pos">${s.h.pos}</div>
+          </div>
+          <div class="matchup-reason">${s.reason}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+//  RENDER PITCHERS
+// ══════════════════════════════════════════
+let activePitcherFilter = 'all';
+
+function filterPitchers(type, btn) {
+  document.querySelectorAll('#page-pitchers .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activePitcherFilter = type;
+  renderPitchers();
+}
+
+function getOPSFromStr(str) {
+  if(!str||str==='—') return 0;
+  const m = str.match(/(\d*\.?\d+)$/);
+  if(m) { const v=parseFloat(m[1]); if(v>0&&v<5) return v; }
+  return 0.65;
+}
+const pitchColors = { FB:'#ef4444', SL:'#f59e0b', CB:'#22c55e', CH:'#3b82f6' };
+
+function togglePitchDetail(el) {
+  const panel = el.nextElementSibling;
+  const icon  = el.querySelector('.pitch-expand-icon');
+  if(!panel||!panel.classList.contains('pitch-detail-panel')) return;
+  const open = !panel.classList.contains('hidden');
+  panel.classList.toggle('hidden', open);
+  if(icon) icon.textContent = open?'▸':'▾';
+}
+
+function renderPitchers() {
+  let pool = currentSeason==='2026'?pitchers2026:pitchers;
+  const cont = document.getElementById('pitchers-list');
+  if(pool.length===0){cont.innerHTML=placeholder2026();return;}
+
+  const q = (document.getElementById('pitchers-search')?.value||'').toLowerCase();
+  if(q) pool = pool.filter(p=>p.name.toLowerCase().includes(q));
+
+  if(activePitcherFilter==='rhh') {
+    pool = [...pool].sort((a,b)=>getOPSFromStr(a.rhhAvgOps)-getOPSFromStr(b.rhhAvgOps));
+  } else if(activePitcherFilter==='lhh') {
+    pool = [...pool].sort((a,b)=>getOPSFromStr(a.lhhAvgOps)-getOPSFromStr(b.lhhAvgOps));
+  }
+  cont.innerHTML = pool.map(p=>{
+    const pitches=[
+      {key:'FB',pct:p.fbPct},{key:'SL',pct:p.slPct},
+      {key:'CB',pct:p.cbPct},{key:'CH',pct:p.chPct},
+    ].filter(x=>x.pct>0);
+
+    const eraColor = p.era<=4.5?'good':p.era<=7?'ok':'bad';
+
+    const pitchRows = pitches.map(px=>{
+      const color  = pitchColors[px.key]||'#999';
+      const detail = p.pitchDetails?.[px.key];
+      const detailHtml = detail?`
+        <div class="pitch-detail-panel hidden">
+          <span class="stat-chip" style="padding:3px 8px;"><span class="stat-label">AVG/OPS</span><span class="stat-val neutral" style="font-size:12px;">${detail.avgOps}</span></span>
+          <span class="stat-chip" style="padding:3px 8px;"><span class="stat-label">Strike%</span><span class="stat-val neutral" style="font-size:12px;">${fmtPct(detail.strike)}</span></span>
+          <span class="stat-chip" style="padding:3px 8px;"><span class="stat-label">Chase%</span><span class="stat-val neutral" style="font-size:12px;">${fmtPct(detail.chase)}</span></span>
+          <span class="stat-chip" style="padding:3px 8px;"><span class="stat-label">Whiff%</span><span class="stat-val neutral" style="font-size:12px;">${fmtPct(detail.whiff)}</span></span>
+          <span class="stat-chip" style="padding:3px 8px;"><span class="stat-label">Swing%</span><span class="stat-val neutral" style="font-size:12px;">${fmtPct(detail.swing)}</span></span>
+        </div>`:'';
+
+      return `
+        <div class="pitch-bar-row" onclick="togglePitchDetail(this)">
+          <div class="pitch-type-label" style="color:${color};">${px.key}</div>
+          <div class="pitch-bar-bg"><div class="pitch-bar-fill" style="width:${(px.pct*100).toFixed(0)}%;background:${color};opacity:0.8;"></div></div>
+          <div class="pitch-bar-pct">${(px.pct*100).toFixed(0)}%</div>
+          <div class="pitch-expand-icon">${detail?'▸':''}</div>
+        </div>${detailHtml}`;
+    }).join('');
+
+    return `<div class="pitcher-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+        <div>
+          <div class="player-name">${p.name}</div>
+          <span class="pitcher-hand ${p.hand==='L'?'lhp':''}" style="margin-top:4px;display:inline-block;">${p.hand}HP</span>
+        </div>
+        <div style="text-align:right;">
+          <div class="stat-val ${eraColor}" style="font-family:'DM Mono',monospace;font-size:22px;">${p.era.toFixed(2)}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">ERA · WHIP ${p.whip.toFixed(2)}</div>
+        </div>
+      </div>
+      <div class="section-label" style="font-size:9px;margin-bottom:6px;">Pitch Mix</div>
+      ${pitchRows}
+      <div class="section-label" style="font-size:9px;margin-top:14px;margin-bottom:8px;">Batter Splits</div>
+      <div class="split-cols">
+        <div class="split-block">
+          <div class="split-label vs-rhp">vs RHH</div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text);">${p.rhhAvgOps}</div>
+          <div style="margin-top:4px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">K:BB ${p.rhhKbb}</div>
+          <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;">
+            <span class="stat-chip" style="padding:2px 7px;"><span class="stat-label">Chase</span><span style="font-family:'DM Mono',monospace;font-size:11px;">${fmtPct(p.rhhChase)}</span></span>
+            <span class="stat-chip" style="padding:2px 7px;"><span class="stat-label">Whiff</span><span style="font-family:'DM Mono',monospace;font-size:11px;">${fmtPct(p.rhhWhiff)}</span></span>
+          </div>
+        </div>
+        <div class="split-block">
+          <div class="split-label vs-lhp">vs LHH</div>
+          <div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--text);">${p.lhhAvgOps}</div>
+          <div style="margin-top:4px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);">K:BB ${p.lhhKbb}</div>
+          <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap;">
+            <span class="stat-chip" style="padding:2px 7px;"><span class="stat-label">Chase</span><span style="font-family:'DM Mono',monospace;font-size:11px;">${fmtPct(p.lhhChase)}</span></span>
+            <span class="stat-chip" style="padding:2px 7px;"><span class="stat-label">Whiff</span><span style="font-family:'DM Mono',monospace;font-size:11px;">${fmtPct(p.lhhWhiff)}</span></span>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:10px;background:rgba(255,255,255,0.03);border-radius:6px;padding:8px 11px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;">
+        <span>RISP <span style="color:var(--text);">${p.riscpOps}</span></span>
+        <span>Strike RHH <span style="color:var(--text);">${fmtPct(p.rhhStrike)}</span></span>
+        <span>Strike LHH <span style="color:var(--text);">${fmtPct(p.lhhStrike)}</span></span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════
+//  RENDER REPORTS
+// ══════════════════════════════════════════
+function renderReports() {
+  const pool = currentSeason==='2026'?reports2026:scoutingReports;
+  const q    = (document.getElementById('reports-search')?.value||'').toLowerCase();
+  const cont = document.getElementById('reports-list');
+  if(pool.length===0){cont.innerHTML=placeholder2026();return;}
+
+  const data = q ? pool.filter(r=>r.name.toLowerCase().includes(q)) : pool;
+
+  cont.innerHTML = data.map(r=>`
+    <div class="player-card">
+      <div class="player-header">
+        <div class="player-name">${r.name}</div>
+      </div>
+      <div class="section-label" style="font-size:9px;margin-bottom:7px;">L/R Matchup</div>
+      <div style="font-size:14px;color:var(--sub);margin-bottom:14px;line-height:1.6;">${r.rl}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">🔥 Hot Zones</div>
+          <div style="font-size:13px;color:var(--sub);line-height:1.6;">${r.hot}</div>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:#60a5fa;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:5px;">❄️ Cold Zones</div>
+          <div style="font-size:13px;color:var(--sub);line-height:1.6;">${r.cold}</div>
+        </div>
+      </div>
+      <div style="background:rgba(200,16,46,0.06);border-left:2px solid var(--red);border-radius:0 6px 6px 0;padding:9px 13px;">
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--red);letter-spacing:1px;text-transform:uppercase;">RISP · </span>
+        <span style="font-size:13px;color:var(--sub);line-height:1.6;">${r.risp}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════
+//  LEVERAGE
+// ══════════════════════════════════════════
+let activeLevFilter = 'overall';
+
+function filterLeverage(view, btn) {
+  document.querySelectorAll('#page-leverage .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLeverage(view);
+}
+
+function colorOPSAllowed(str) {
+  // lower is better for pitcher — parse OPS from "AVG/OPS" string
+  const m = str && str.match(/(\d*\.?\d+)$/);
+  if (!m) return '';
+  const v = parseFloat(m[1]);
+  if (isNaN(v) || v === 0) return '';
+  if (v <= 0.650) return 'color:var(--green);';
+  if (v <= 0.850) return 'color:var(--yellow);';
+  return 'color:#ef4444;';
+}
+
+function colorERA(v) {
+  if (v <= 4.50) return 'var(--green)';
+  if (v <= 7.00) return 'var(--yellow)';
+  return '#ef4444';
+}
+
+function colorStat(v, goodBelow, badAbove) {
+  // For stats where lower = better (ERA, AVG allowed, Chase given)
+  // goodBelow = threshold for green, badAbove = threshold for red
+  if (typeof v !== 'number') return '';
+  if (v <= goodBelow) return 'color:var(--green);';
+  if (v >= badAbove)  return 'color:#ef4444;';
+  return 'color:var(--yellow);';
+}
+
+function colorStatHigh(v, goodAbove, badBelow) {
+  // For stats where higher = better (Strike%, K:BB ratio)
+  if (typeof v !== 'number') return '';
+  if (v >= goodAbove) return 'color:var(--green);';
+  if (v <= badBelow)  return 'color:#ef4444;';
+  return 'color:var(--yellow);';
+}
+
+function kbbRatio(str) {
+  // Parse "36:15" → 2.40, return null if can't parse
+  if (!str || str === 'N/A' || str === '—') return null;
+  const m = str.match(/(\d+):(\d+)/);
+  if (!m) return null;
+  const bb = parseInt(m[2]);
+  return bb === 0 ? null : (parseInt(m[1]) / bb);
+}
+
+function renderLeverage(view) {
+  activeLevFilter = view;
+  const pool = currentSeason === '2026' ? pitchers2026 : pitchers;
+  const cont = document.getElementById('leverage-list');
+  if (pool.length === 0) { cont.innerHTML = placeholder2026(); return; }
+
+  // Sort defaults: overall → ERA, rhh/lhh → OPS allowed
+  let sorted = [...pool];
+  if (view === 'overall') sorted.sort((a,b) => a.era - b.era);
+  if (view === 'rhh')     sorted.sort((a,b) => parseOPS(a.rhhAvgOps) - parseOPS(b.rhhAvgOps));
+  if (view === 'lhh')     sorted.sort((a,b) => parseOPS(a.lhhAvgOps) - parseOPS(b.lhhAvgOps));
+
+  // Column headers + row cells differ by view
+  const configs = {
+    overall: {
+      headers: ['#','Pitcher','ERA','WHIP','RISP OPS','K:BB (RHH)','K:BB (LHH)','Lev Score'],
+      row: p => {
+        const rKbb = kbbRatio(p.rhhKbb);
+        const lKbb = kbbRatio(p.lhhKbb);
+        return [
+          `<div class="lev-rank">${sorted.indexOf(p)+1}</div>`,
+          `<div><div class="lev-name">${p.name}</div><span class="lev-hand-tag ${p.hand==='L'?'lhp':''}">${p.hand}HP</span></div>`,
+          `<div class="lev-cell" style="font-size:14px;font-weight:600;color:${colorERA(p.era)};">${p.era.toFixed(2)}</div>`,
+          `<div class="lev-cell">${p.whip.toFixed(2)}</div>`,
+          `<div class="lev-cell" style="${colorOPSAllowed(p.riscpOps)}">${p.riscpOps}</div>`,
+          `<div class="lev-cell" style="${rKbb!==null?colorStatHigh(rKbb,2.0,1.0):''}">${p.rhhKbb}</div>`,
+          `<div class="lev-cell" style="${lKbb!==null?colorStatHigh(lKbb,2.0,1.0):''}">${p.lhhKbb}</div>`,
+          `<div class="lev-score-cell ${p.levScore?"scored":""}">${p.levScore != null ? p.levScore.toFixed(3)+" <span style=\"font-size:10px;opacity:0.6;\">#"+p.levRank+"</span>" : "—"}</div>`,
+        ];
+      }
+    },
+    rhh: {
+      headers: ['#','Pitcher','AVG/OPS vs RHH','K:BB','Chase%','Whiff%','Strike%','Lev Score'],
+      row: p => {
+        const kbb = kbbRatio(p.rhhKbb);
+        return [
+          `<div class="lev-rank">${sorted.indexOf(p)+1}</div>`,
+          `<div><div class="lev-name">${p.name}</div><span class="lev-hand-tag ${p.hand==='L'?'lhp':''}">${p.hand}HP</span></div>`,
+          `<div class="lev-cell" style="${colorOPSAllowed(p.rhhAvgOps)}">${p.rhhAvgOps}</div>`,
+          `<div class="lev-cell" style="${kbb!==null?colorStatHigh(kbb,2.0,1.0):''}">${p.rhhKbb}</div>`,
+          `<div class="lev-cell" style="${colorStatHigh(p.rhhChase,.25,.12)}">${fmtPct(p.rhhChase)}</div>`,
+          `<div class="lev-cell" style="${colorStatHigh(p.rhhWhiff,.28,.15)}">${fmtPct(p.rhhWhiff)}</div>`,
+          `<div class="lev-cell" style="${colorStatHigh(p.rhhStrike,.65,.55)}">${fmtPct(p.rhhStrike)}</div>`,
+          `<div class="lev-score-cell ${p.levScore?"scored":""}">${p.levScore != null ? p.levScore.toFixed(3)+" <span style=\"font-size:10px;opacity:0.6;\">#"+p.levRank+"</span>" : "—"}</div>`,
+        ];
+      }
+    },
+    lhh: {
+      headers: ['#','Pitcher','AVG/OPS vs LHH','K:BB','Chase%','Whiff%','Strike%','Lev Score'],
+      row: p => {
+        const kbb = kbbRatio(p.lhhKbb);
+        return [
+          `<div class="lev-rank">${sorted.indexOf(p)+1}</div>`,
+          `<div><div class="lev-name">${p.name}</div><span class="lev-hand-tag ${p.hand==='L'?'lhp':''}">${p.hand}HP</span></div>`,
+          `<div class="lev-cell" style="${colorOPSAllowed(p.lhhAvgOps)}">${p.lhhAvgOps}</div>`,
+          `<div class="lev-cell" style="${kbb!==null?colorStatHigh(kbb,2.0,1.0):''}">${p.lhhKbb}</div>`,
+          `<div class="lev-cell" style="${colorStatHigh(p.lhhChase,.25,.12)}">${fmtPct(p.lhhChase)}</div>`,
+          `<div class="lev-cell" style="${colorStatHigh(p.lhhWhiff,.28,.15)}">${fmtPct(p.lhhWhiff)}</div>`,
+          `<div class="lev-cell" style="${colorStatHigh(p.lhhStrike,.65,.55)}">${fmtPct(p.lhhStrike)}</div>`,
+          `<div class="lev-score-cell ${p.levScore?"scored":""}">${p.levScore != null ? p.levScore.toFixed(3)+" <span style=\"font-size:10px;opacity:0.6;\">#"+p.levRank+"</span>" : "—"}</div>`,
+        ];
+      }
+    }
+  };
+
+  const cfg = configs[view];
+
+  cont.innerHTML = `
+    <div class="lev-table">
+      <div class="lev-thead">
+        ${cfg.headers.map(h=>`<div>${h}</div>`).join('')}
+      </div>
+      ${sorted.map(p=>`
+        <div class="lev-row">
+          ${cfg.row(p).join('')}
+        </div>`).join('')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function switchSeason(szn) {
+  currentSeason = szn;
+  document.getElementById('btn-2025').classList.toggle('active', szn==='2025');
+  document.getElementById('btn-2026').classList.toggle('active', szn==='2026');
+  const sub = document.getElementById('splits-sub');
+  if(sub) sub.textContent=`AVG · OPS · Chase % · Whiff % — ${szn}`;
+  document.querySelectorAll('#page-splits .filter-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  activeSplitFilter='all';
+  renderSplits('all');
+  renderPitchers();
+  renderReports();
+  document.getElementById('matchup-output').innerHTML='';
+  document.querySelectorAll('#page-leverage .filter-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  activeLevFilter='overall';
+  renderLeverage('overall');
+  activePitcherFilter='all';
+  document.querySelectorAll('#page-pitchers .filter-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+renderSplits('all');
+renderPitchers();
+renderReports();
+renderLeverage('overall');
+</script>
+</body>
+</html>
